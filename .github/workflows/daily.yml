@@ -7,7 +7,13 @@ name: poxyndex-daily
 #     (free Supabase projects pause after 7 idle days).
 on:
   schedule:
-    - cron: "23 5 * * *" # 05:23 UTC daily
+    # Several times a day at odd off-peak UTC minutes. DBA blocks some GitHub
+    # runner IPs, so multiple attempts/day maximise the odds of at least one
+    # reaching it. Runs are idempotent (upserts), so extra runs are harmless.
+    - cron: "23 5 * * *"
+    - cron: "17 11 * * *"
+    - cron: "41 17 * * *"
+    - cron: "7 23 * * *"
   workflow_dispatch: {} # allow manual runs from the Actions tab
 
 # Avoid overlapping runs.
