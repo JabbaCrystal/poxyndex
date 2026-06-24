@@ -54,8 +54,8 @@ export default function Methodology() {
           <strong>not</strong> store or display seller names, contact details,
           exact addresses, or listing photos. If you are a seller and want a data
           point removed, email{" "}
-          <a className="text-poxy-red hover:underline" href="mailto:Davidyazdandoust@hotmail.com">
-            Davidyazdandoust@hotmail.com
+          <a className="text-poxy-red hover:underline" href="mailto:jabbacrystal@gmail.com">
+            jabbacrystal@gmail.com
           </a>
           .
         </p>

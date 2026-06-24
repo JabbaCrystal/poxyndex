@@ -5,7 +5,7 @@ export const DRY_RUN = process.env.DRY_RUN === "1";
 
 // Polite identification — honest UA with a real contact, per our legal posture.
 export const USER_AGENT =
-  "PoxyndexBot/0.1 (+https://github.com/JabbaCrystal/poxyndex; non-commercial price index; contact: Davidyazdandoust@hotmail.com)";
+  "PoxyndexBot/0.1 (+https://github.com/JabbaCrystal/poxyndex; non-commercial price index; contact: jabbacrystal@gmail.com)";
 
 export const REQUEST_HEADERS: Record<string, string> = {
   "User-Agent": USER_AGENT,
