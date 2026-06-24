@@ -3,9 +3,9 @@
 
 export const DRY_RUN = process.env.DRY_RUN === "1";
 
-// Polite identification — change the contact to a real address you own.
+// Polite identification — honest UA with a real contact, per our legal posture.
 export const USER_AGENT =
-  "PoxyndexBot/0.1 (+https://github.com/YOURNAME/poxyndex; non-commercial price index; contact: you@example.com)";
+  "PoxyndexBot/0.1 (+https://github.com/david-inspectly/poxyndex; non-commercial price index; contact: Davidyazdandoust@hotmail.com)";
 
 export const REQUEST_HEADERS: Record<string, string> = {
   "User-Agent": USER_AGENT,
