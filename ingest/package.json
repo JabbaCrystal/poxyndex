@@ -1,0 +1,21 @@
+{
+  "name": "poxyndex-ingest",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Daily scraper + economic-data ingestion + Poxyndex computation.",
+  "scripts": {
+    "ingest": "tsx src/index.ts",
+    "ingest:dry": "DRY_RUN=1 tsx src/index.ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.45.4",
+    "cheerio": "^1.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.7.4",
+    "tsx": "^4.19.1",
+    "typescript": "^5.6.2"
+  }
+}

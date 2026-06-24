@@ -1,0 +1,40 @@
+name: poxyndex-daily
+
+# Daily scrape + index recompute. Two scheduling notes baked in:
+#   * GitHub cron is UTC and best-effort (jitter, drops at :00) — we use an odd
+#     off-peak minute, never "0 0 * * *".
+#   * The job writes to Supabase every run, which doubles as the keep-alive
+#     (free Supabase projects pause after 7 idle days).
+on:
+  schedule:
+    - cron: "23 5 * * *" # 05:23 UTC daily
+  workflow_dispatch: {} # allow manual runs from the Actions tab
+
+# Avoid overlapping runs.
+concurrency:
+  group: poxyndex-daily
+  cancel-in-progress: false
+
+jobs:
+  ingest:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    defaults:
+      run:
+        working-directory: ingest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+          cache-dependency-path: ingest/package-lock.json
+
+      - run: npm ci
+
+      - name: Run ingest
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+        run: npm run ingest

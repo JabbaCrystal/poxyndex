@@ -1,0 +1,23 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: light;
+}
+
+body {
+  background: theme(colors.poxy.paper);
+  color: theme(colors.poxy.ink);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* The signature red top rule, à la a certain newspaper. */
+.poxy-rule {
+  height: 4px;
+  background: theme(colors.poxy.red);
+}
+
+.tabular {
+  font-variant-numeric: tabular-nums;
+}
