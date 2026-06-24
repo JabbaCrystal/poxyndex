@@ -1,7 +1,7 @@
 import * as cheerio from "cheerio";
 import { LASERDISKEN } from "../config.js";
 import { politeFetch } from "../util.js";
-import type { RawListing } from "../types.js";
+import type { ScrapeResult } from "../types.js";
 
 /**
  * Laserdisken.dk — the "official retail" anchor.
@@ -19,9 +19,9 @@ const OUT_OF_STOCK_SIGNALS = [
   "påmind mig",
 ];
 
-export async function scrapeLaserdisken(): Promise<RawListing[]> {
+export async function scrapeLaserdisken(): Promise<ScrapeResult> {
   const html = await politeFetch(LASERDISKEN.product);
-  if (!html) return [];
+  if (!html) return { ok: false, listings: [] };
 
   const $ = cheerio.load(html);
   const text = $("body").text().toLowerCase();
@@ -35,15 +35,18 @@ export async function scrapeLaserdisken(): Promise<RawListing[]> {
       ? Math.round(Number(priceMatch[1]!.replace(/\./g, ""))) || null
       : null;
 
-  return [
-    {
-      source: "laserdisken",
-      sourceListingId: "ref-laserdisken",
-      sourceUrl: LASERDISKEN.product,
-      title: "Mr. Poxycat & Co. (Laserdisken)",
-      priceDkk,
-      isReference: true,
-      status: outOfStock ? "out_of_stock" : "active",
-    },
-  ];
+  return {
+    ok: true,
+    listings: [
+      {
+        source: "laserdisken",
+        sourceListingId: "ref-laserdisken",
+        sourceUrl: LASERDISKEN.product,
+        title: "Mr. Poxycat & Co. (Laserdisken)",
+        priceDkk,
+        isReference: true,
+        status: outOfStock ? "out_of_stock" : "active",
+      },
+    ],
+  };
 }

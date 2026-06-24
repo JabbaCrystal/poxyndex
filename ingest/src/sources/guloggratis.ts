@@ -1,7 +1,7 @@
 import * as cheerio from "cheerio";
 import { GULOGGRATIS, SEARCH_QUERIES, MATCH_SUBSTRING } from "../config.js";
 import { politeFetch } from "../util.js";
-import type { RawListing } from "../types.js";
+import type { RawListing, ScrapeResult } from "../types.js";
 
 /**
  * Gul og Gratis (guloggratis.dk).
@@ -15,13 +15,15 @@ import type { RawListing } from "../types.js";
  * likely thing to need a tweak if GoG changes its markup — they are isolated
  * here on purpose.
  */
-export async function scrapeGulOgGratis(): Promise<RawListing[]> {
+export async function scrapeGulOgGratis(): Promise<ScrapeResult> {
   const seen = new Set<string>();
   const out: RawListing[] = [];
+  let ok = false;
 
   for (const q of SEARCH_QUERIES) {
     const html = await politeFetch(GULOGGRATIS.search(q));
     if (!html) continue;
+    ok = true;
     const $ = cheerio.load(html);
 
     // Each result links to /annonce/<uuid>/<slug>
@@ -57,6 +59,10 @@ export async function scrapeGulOgGratis(): Promise<RawListing[]> {
       });
     });
   }
+  if (!ok) {
+    console.warn("  guloggratis: search unreachable this run — skipping");
+    return { ok: false, listings: [] };
+  }
   console.log(`  guloggratis: ${out.length} listing(s)`);
-  return out;
+  return { ok: true, listings: out };
 }

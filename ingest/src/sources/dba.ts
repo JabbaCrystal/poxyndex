@@ -1,7 +1,7 @@
 import * as cheerio from "cheerio";
 import { DBA, SEARCH_QUERIES, MATCH_SUBSTRING } from "../config.js";
 import { politeFetch } from "../util.js";
-import type { RawListing } from "../types.js";
+import type { RawListing, ScrapeResult } from "../types.js";
 
 /**
  * DBA.dk (Adevinta "recommerce" platform).
@@ -15,18 +15,25 @@ import type { RawListing } from "../types.js";
  * Item:   https://www.dba.dk/recommerce/forsale/item/<adId>
  */
 
-/** Collect candidate adIds from the search pages for all query variants. */
-async function discoverAdIds(): Promise<Set<string>> {
+/**
+ * Collect candidate adIds from the search pages for all query variants.
+ * `ok` is true if at least one search page was actually fetched (HTTP 200);
+ * if every request failed (e.g. 403 IP block) we report ok=false so the caller
+ * does not mistake a block for an empty market.
+ */
+async function discoverAdIds(): Promise<{ ok: boolean; ids: Set<string> }> {
   const ids = new Set<string>();
+  let ok = false;
   for (const q of SEARCH_QUERIES) {
     const html = await politeFetch(DBA.search(q));
     if (!html) continue;
+    ok = true;
     // Cards link to /recommerce/forsale/item/<digits>
     for (const m of html.matchAll(/forsale\/item\/(\d+)/g)) {
       ids.add(m[1]!);
     }
   }
-  return ids;
+  return { ok, ids };
 }
 
 interface JsonLdProduct {
@@ -86,8 +93,12 @@ function extractPostalCity(html: string): string | null {
   return addr || html.match(/postalCode=(\d{4})/)?.[1] || null;
 }
 
-export async function scrapeDba(): Promise<RawListing[]> {
-  const ids = await discoverAdIds();
+export async function scrapeDba(): Promise<ScrapeResult> {
+  const { ok, ids } = await discoverAdIds();
+  if (!ok) {
+    console.warn("  dba: search unreachable (likely IP-blocked this run) — skipping");
+    return { ok: false, listings: [] };
+  }
   console.log(`  dba: ${ids.size} candidate ad(s)`);
   const out: RawListing[] = [];
 
@@ -121,5 +132,5 @@ export async function scrapeDba(): Promise<RawListing[]> {
     });
   }
   console.log(`  dba: ${out.length} genuine Poxycat listing(s)`);
-  return out;
+  return { ok: true, listings: out };
 }

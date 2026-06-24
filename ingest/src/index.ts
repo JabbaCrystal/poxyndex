@@ -16,7 +16,9 @@ import { ingestWages } from "./econ/wages.js";
 import { ingestFx } from "./econ/fx.js";
 import { ingestBigMac } from "./econ/bigmac.js";
 import { computeIndex } from "./index_calc.js";
-import type { RawListing, SourceName } from "./types.js";
+import type { ScrapeResult, SourceName } from "./types.js";
+
+const UNREACHABLE: ScrapeResult = { ok: false, listings: [] };
 
 async function safe<T>(label: string, fn: () => Promise<T>, fallback: T): Promise<T> {
   try {
@@ -33,17 +35,22 @@ async function main() {
 
   // 1. Scrape sources (each isolated so one failure can't sink the run).
   console.log("• scraping sources");
-  const dba = await safe("dba", scrapeDba, [] as RawListing[]);
-  const gog = await safe("guloggratis", scrapeGulOgGratis, [] as RawListing[]);
-  const laser = await safe("laserdisken", scrapeLaserdisken, [] as RawListing[]);
+  const results: Record<SourceName, ScrapeResult> = {
+    dba: await safe("dba", scrapeDba, UNREACHABLE),
+    guloggratis: await safe("guloggratis", scrapeGulOgGratis, UNREACHABLE),
+    laserdisken: await safe("laserdisken", scrapeLaserdisken, UNREACHABLE),
+  };
 
-  // All three were attempted this run; reconciliation checks each.
-  const scrapedSources: SourceName[] = ["dba", "guloggratis", "laserdisken"];
-  const all = [...dba, ...gog, ...laser];
+  // Only reconcile disappearances for sources we could actually reach this run —
+  // otherwise a transient IP block would falsely mark live listings as sold.
+  const reachable = (Object.keys(results) as SourceName[]).filter((s) => results[s].ok);
+  const blocked = (Object.keys(results) as SourceName[]).filter((s) => !results[s].ok);
+  if (blocked.length) console.warn(`  unreachable this run (reconciliation skipped): ${blocked.join(", ")}`);
+  const all = Object.values(results).flatMap((r) => r.listings);
 
   // 2. Persist + reconcile disappearances (the sold signal).
   console.log("• persisting listings");
-  await safe("persist", () => persistListings(all, scrapedSources), undefined);
+  await safe("persist", () => persistListings(all, reachable), undefined);
 
   // 3. Cross-platform dedupe.
   console.log("• dedupe");
@@ -69,8 +76,8 @@ async function main() {
           {
             id: 1,
             last_run: startedAt,
-            last_status: "ok",
-            detail: { sources: scrapedSources, scraped: all.length, index },
+            last_status: blocked.length ? "ok (some sources blocked)" : "ok",
+            detail: { reachable, blocked, scraped: all.length, index },
           },
           { onConflict: "id" }
         );

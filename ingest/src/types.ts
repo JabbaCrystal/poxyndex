@@ -2,6 +2,18 @@
 
 export type SourceName = "dba" | "guloggratis" | "laserdisken";
 
+/**
+ * Result of scraping one source. `ok: false` means we could not even reach the
+ * source this run (e.g. an IP block / 403), which is NOT the same as "the source
+ * returned zero listings". Callers must skip disappearance-reconciliation for a
+ * source that was unreachable, or a transient block would falsely mark live
+ * listings as sold.
+ */
+export interface ScrapeResult {
+  ok: boolean;
+  listings: RawListing[];
+}
+
 export type RegionCode =
   | "hovedstaden"
   | "sjaelland"
