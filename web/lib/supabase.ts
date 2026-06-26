@@ -35,6 +35,16 @@ export async function fetchActiveListings(): Promise<PublicListing[]> {
   return (data ?? []) as PublicListing[];
 }
 
+export async function fetchLatestFx(): Promise<number | null> {
+  const { data } = await supabase
+    .from("fx_daily")
+    .select("dkk_per_usd")
+    .order("day", { ascending: false })
+    .limit(1)
+    .maybeSingle();
+  return (data as { dkk_per_usd?: number } | null)?.dkk_per_usd ?? null;
+}
+
 export async function fetchHeartbeat(): Promise<Heartbeat | null> {
   const { data } = await supabase
     .from("heartbeat")

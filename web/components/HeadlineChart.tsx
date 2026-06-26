@@ -21,12 +21,12 @@ export function HeadlineChart({ history }: { history: IndexDaily[] }) {
 
   if (data.length < 2) {
     return (
-      <div className="flex h-64 items-center justify-center rounded-lg border border-dashed border-poxy-line bg-poxy-card text-center text-sm text-poxy-muted">
-        <div>
-          <div className="font-serif text-lg text-poxy-ink">Collecting history…</div>
-          <p className="mx-auto mt-1 max-w-sm">
+      <div className="glass flex h-64 items-center justify-center rounded-2xl text-center">
+        <div className="px-6">
+          <div className="font-serif text-lg text-cloud">Collecting history…</div>
+          <p className="mx-auto mt-1 max-w-sm text-sm text-muted">
             The Poxyndex needs at least two daily readings to draw a trend. Come
-            back tomorrow — the market moves at the speed of a rare DVD.
+            back tomorrow — this market moves at the speed of a rare DVD.
           </p>
         </div>
       </div>
@@ -34,25 +34,31 @@ export function HeadlineChart({ history }: { history: IndexDaily[] }) {
   }
 
   return (
-    <div className="rounded-lg border border-poxy-line bg-poxy-card p-4">
-      <h3 className="mb-3 font-serif text-lg font-bold">
-        Headline Poxyndex vs. constant kroner
+    <div className="glass rounded-2xl p-4">
+      <h3 className="mb-3 font-serif text-lg font-bold text-cloud">
+        The Poxyndex over time <span className="text-muted">· nominal vs constant kroner</span>
       </h3>
       <ResponsiveContainer width="100%" height={280}>
-        <LineChart data={data} margin={{ top: 5, right: 10, bottom: 5, left: -10 }}>
-          <CartesianGrid strokeDasharray="3 3" stroke="#E3DCCD" />
-          <XAxis dataKey="day" tick={{ fontSize: 11 }} stroke="#6B6B6B" />
-          <YAxis tick={{ fontSize: 11 }} stroke="#6B6B6B" unit=" kr" width={60} />
+        <LineChart data={data} margin={{ top: 5, right: 10, bottom: 5, left: -12 }}>
+          <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.07)" />
+          <XAxis dataKey="day" tick={{ fontSize: 11, fill: "#9A93B4" }} stroke="rgba(255,255,255,0.12)" />
+          <YAxis tick={{ fontSize: 11, fill: "#9A93B4" }} stroke="rgba(255,255,255,0.12)" unit=" kr" width={64} />
           <Tooltip
-            contentStyle={{ fontSize: 12, borderColor: "#E3DCCD" }}
+            contentStyle={{
+              fontSize: 12,
+              background: "#15131F",
+              border: "1px solid rgba(255,255,255,0.12)",
+              borderRadius: 12,
+              color: "#ECEAF6",
+            }}
             formatter={(v: number) => [`${v} kr`, ""]}
           />
-          <Legend wrapperStyle={{ fontSize: 12 }} />
+          <Legend wrapperStyle={{ fontSize: 12, color: "#9A93B4" }} />
           <Line
             type="monotone"
             dataKey="nominal"
-            name="Asking price (nominal)"
-            stroke="#E3120B"
+            name="Asking price"
+            stroke="#57E0FF"
             strokeWidth={2.5}
             dot={false}
             connectNulls
@@ -60,8 +66,8 @@ export function HeadlineChart({ history }: { history: IndexDaily[] }) {
           <Line
             type="monotone"
             dataKey="real"
-            name="In 2025-kroner (CPI-adjusted)"
-            stroke="#121212"
+            name="In 2025-kroner"
+            stroke="#E26BFF"
             strokeWidth={1.5}
             strokeDasharray="4 3"
             dot={false}

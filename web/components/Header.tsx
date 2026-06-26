@@ -10,18 +10,12 @@ export function Header({
   setMarket: (m: Market) => void;
 }) {
   return (
-    <header className="border-b border-poxy-line bg-poxy-paper">
-      <div className="poxy-rule" />
-      <div className="mx-auto flex max-w-5xl flex-col gap-3 px-5 py-6 sm:flex-row sm:items-end sm:justify-between">
-        <div>
-          <h1 className="font-serif text-4xl font-bold tracking-tight text-poxy-ink sm:text-5xl">
-            The <span className="text-poxy-red">Poxyndex</span>
-          </h1>
-          <p className="mt-1 max-w-xl text-sm text-poxy-muted">
-            A Big Mac Index for <em>Mr. Poxycat &amp; Co.</em> — the out-of-print
-            Danish DVD. Tracking the second-hand price of the nation&apos;s least
-            liquid asset.
-          </p>
+    <header className="relative z-10 border-b border-white/5">
+      <div className="mx-auto flex max-w-5xl items-center justify-between px-5 py-4">
+        <div className="flex items-center gap-2">
+          <span className="font-serif text-xl font-bold tracking-tight">
+            The <span className="iri-text">Poxyndex</span>
+          </span>
         </div>
         <MarketToggle market={market} setMarket={setMarket} />
       </div>
@@ -37,19 +31,19 @@ function MarketToggle({
   setMarket: (m: Market) => void;
 }) {
   return (
-    <div className="inline-flex shrink-0 overflow-hidden rounded-full border border-poxy-line bg-white text-sm">
+    <div className="glass inline-flex shrink-0 overflow-hidden rounded-full p-0.5 text-sm">
       {(["dk", "world"] as const).map((m) => (
         <button
           key={m}
           onClick={() => setMarket(m)}
           className={
-            "px-4 py-1.5 font-medium transition-colors " +
+            "rounded-full px-3.5 py-1.5 font-medium transition-all " +
             (market === m
-              ? "bg-poxy-red text-white"
-              : "text-poxy-muted hover:bg-poxy-paper")
+              ? "bg-white/90 text-ink shadow"
+              : "text-muted hover:text-cloud")
           }
         >
-          {m === "dk" ? "🇩🇰 Denmark" : "🌍 Rest of World"}
+          {m === "dk" ? "🇩🇰 Denmark" : "🌍 World"}
         </button>
       ))}
     </div>

@@ -3,19 +3,134 @@
 @tailwind utilities;
 
 :root {
-  color-scheme: light;
+  color-scheme: dark;
 }
 
 body {
-  background: theme(colors.poxy.paper);
-  color: theme(colors.poxy.ink);
+  background-color: #0b0a12;
+  /* stage spotlight + soft iridescent washes */
+  background-image:
+    radial-gradient(1100px 560px at 50% -8%, rgba(165, 123, 255, 0.20), transparent 60%),
+    radial-gradient(820px 480px at 88% 6%, rgba(87, 224, 255, 0.10), transparent 60%),
+    radial-gradient(680px 480px at 8% 18%, rgba(226, 107, 255, 0.10), transparent 60%);
+  background-attachment: fixed;
+  color: #eceaf6;
   -webkit-font-smoothing: antialiased;
 }
 
-/* The signature red top rule, à la a certain newspaper. */
-.poxy-rule {
-  height: 4px;
-  background: theme(colors.poxy.red);
+@layer components {
+  .glass {
+    background: rgba(255, 255, 255, 0.045);
+    border: 1px solid rgba(255, 255, 255, 0.09);
+    -webkit-backdrop-filter: blur(8px);
+    backdrop-filter: blur(8px);
+  }
+  .iri-text {
+    background: linear-gradient(100deg, #e26bff, #57e0ff 38%, #ffd56b 72%, #e26bff);
+    background-size: 200% auto;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    animation: iri-pan 8s linear infinite;
+  }
+  .iri-hr {
+    height: 3px;
+    border: 0;
+    background: linear-gradient(90deg, transparent, #e26bff, #57e0ff, #ffd56b, transparent);
+  }
+}
+
+/* ── iridescent DVD disc ─────────────────────────────────────────────── */
+.disc {
+  border-radius: 50%;
+  background: conic-gradient(
+    from 210deg,
+    #ff6bd6,
+    #57e0ff,
+    #7cffb2,
+    #ffd56b,
+    #ff8a5b,
+    #e26bff,
+    #57e0ff,
+    #ff6bd6
+  );
+  filter: saturate(1.15);
+}
+.disc::after {
+  /* glossy sheen */
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: radial-gradient(120% 80% at 30% 18%, rgba(255, 255, 255, 0.5), transparent 46%);
+  mix-blend-mode: screen;
+}
+.disc-ring {
+  position: absolute;
+  inset: 7%;
+  border-radius: 50%;
+  background: repeating-radial-gradient(
+    circle at 50% 50%,
+    rgba(255, 255, 255, 0.07) 0 2px,
+    transparent 2px 6px
+  );
+}
+.disc-hub {
+  position: absolute;
+  inset: 33%;
+  border-radius: 50%;
+  background: radial-gradient(circle at 50% 38%, #2a2740, #131120);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+}
+.disc-hole {
+  position: absolute;
+  inset: 44%;
+  border-radius: 50%;
+  background: #0b0a12;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.8);
+}
+
+/* ── animations ──────────────────────────────────────────────────────── */
+@keyframes spin-slow {
+  to {
+    transform: rotate(360deg);
+  }
+}
+.spin-slow {
+  animation: spin-slow 18s linear infinite;
+}
+
+@keyframes iri-pan {
+  to {
+    background-position: 200% center;
+  }
+}
+
+@keyframes twinkle {
+  0%,
+  100% {
+    opacity: 0;
+    transform: scale(0.3) rotate(0deg);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1) rotate(90deg);
+  }
+}
+.sparkle {
+  position: absolute;
+  animation: twinkle var(--dur, 3s) ease-in-out infinite;
+  animation-delay: var(--delay, 0s);
+  filter: drop-shadow(0 0 4px currentColor);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .spin-slow,
+  .sparkle,
+  .iri-text {
+    animation: none !important;
+  }
 }
 
 .tabular {

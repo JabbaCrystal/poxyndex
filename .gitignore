@@ -22,3 +22,6 @@ npm-debug.log*
 .vercel
 .turbo
 coverage/
+
+# local preview helper
+.claude/

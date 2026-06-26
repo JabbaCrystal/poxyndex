@@ -5,14 +5,17 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        // Economist-ish palette
-        poxy: {
-          red: "#E3120B",
-          ink: "#121212",
-          paper: "#FBF7F0",
-          card: "#FFFFFF",
-          muted: "#6B6B6B",
-          line: "#E3DCCD",
+        // "Now you see it" — a dark magician's stage with iridescent-disc accents.
+        ink: "#0B0A12", // near-black indigo (stage)
+        panel: "#15131F",
+        cloud: "#ECEAF6", // primary text
+        muted: "#9A93B4", // secondary text
+        iris: {
+          magenta: "#E26BFF",
+          cyan: "#57E0FF",
+          gold: "#FFD56B",
+          violet: "#A57BFF",
+          mint: "#7CFFB2",
         },
       },
       fontFamily: {

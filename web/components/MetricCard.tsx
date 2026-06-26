@@ -3,36 +3,27 @@ export function MetricCard({
   value,
   unit,
   sub,
-  accent,
+  icon,
 }: {
   label: string;
   value: string;
   unit?: string;
   sub?: string;
-  accent?: boolean;
+  icon?: string;
 }) {
   return (
-    <div
-      className={
-        "rounded-lg border bg-poxy-card p-4 " +
-        (accent ? "border-poxy-red/40 shadow-sm" : "border-poxy-line")
-      }
-    >
-      <div className="text-xs font-semibold uppercase tracking-wide text-poxy-muted">
-        {label}
+    <div className="glass group rounded-2xl p-4 transition-transform duration-200 hover:-translate-y-0.5">
+      <div className="flex items-center justify-between">
+        <div className="text-[11px] font-semibold uppercase tracking-wider text-muted">
+          {label}
+        </div>
+        {icon && <span className="text-base opacity-70">{icon}</span>}
       </div>
-      <div className="mt-1 flex items-baseline gap-1">
-        <span
-          className={
-            "tabular font-serif text-3xl font-bold " +
-            (accent ? "text-poxy-red" : "text-poxy-ink")
-          }
-        >
-          {value}
-        </span>
-        {unit && <span className="text-sm text-poxy-muted">{unit}</span>}
+      <div className="mt-2 flex items-baseline gap-1">
+        <span className="tabular font-serif text-3xl font-bold text-cloud">{value}</span>
+        {unit && <span className="text-sm text-muted">{unit}</span>}
       </div>
-      {sub && <div className="mt-1 text-xs text-poxy-muted">{sub}</div>}
+      {sub && <div className="mt-1 text-xs text-muted">{sub}</div>}
     </div>
   );
 }
