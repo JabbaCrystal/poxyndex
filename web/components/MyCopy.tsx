@@ -9,6 +9,7 @@ import {
 } from "@/lib/supabase";
 import { REGION_NAMES } from "@/lib/types";
 import { CountUp } from "./CountUp";
+import { MyCopyChart } from "./MyCopyChart";
 
 const LS_KEY = "poxyndex_mycopy";
 const DEVICE_KEY = "poxyndex_device";
@@ -237,7 +238,10 @@ function Result({
           No copies are on the market right now, so there&apos;s nothing to value yours against. Check back when one&apos;s listed.
         </p>
       ) : (
-        <MarketResult paid={paid} month={month} current={current} paidToday={paidToday} years={years} pos={pos} neg={neg} />
+        <>
+          <MarketResult paid={paid} month={month} current={current} paidToday={paidToday} years={years} pos={pos} neg={neg} />
+          <MyCopyChart paid={paid} month={month} current={current} cpi={cpi} />
+        </>
       )}
 
       {community.median != null && community.count > 0 && (
