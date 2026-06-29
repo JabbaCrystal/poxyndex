@@ -35,6 +35,20 @@ export async function fetchActiveListings(): Promise<PublicListing[]> {
   return (data ?? []) as PublicListing[];
 }
 
+export interface CpiPoint {
+  month: string; // 'YYYY-MM'
+  idx: number;
+}
+
+export async function fetchCpiMonthly(): Promise<CpiPoint[]> {
+  const { data, error } = await supabase
+    .from("cpi_monthly")
+    .select("month, idx")
+    .order("month", { ascending: true });
+  if (error) throw error;
+  return (data ?? []).filter((d): d is CpiPoint => d.idx != null);
+}
+
 export async function fetchLatestFx(): Promise<number | null> {
   const { data } = await supabase
     .from("fx_daily")

@@ -9,12 +9,15 @@ import { SupplyList } from "@/components/SupplyList";
 import { DiscHero } from "@/components/DiscHero";
 import { Sparkles } from "@/components/Sparkles";
 import { CountUp } from "@/components/CountUp";
+import { MyCopy } from "@/components/MyCopy";
 import {
   fetchActiveListings,
+  fetchCpiMonthly,
   fetchHeartbeat,
   fetchIndexHistory,
   fetchLatestFx,
   isConfigured,
+  type CpiPoint,
 } from "@/lib/supabase";
 import type { IndexDaily, PublicListing, Heartbeat } from "@/lib/types";
 
@@ -29,6 +32,7 @@ export default function Page() {
   const [listings, setListings] = useState<PublicListing[]>([]);
   const [heartbeat, setHeartbeat] = useState<Heartbeat | null>(null);
   const [fx, setFx] = useState<number | null>(null);
+  const [cpi, setCpi] = useState<CpiPoint[]>([]);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -36,12 +40,19 @@ export default function Page() {
       setError("Live data isn’t connected in this environment.");
       return;
     }
-    Promise.all([fetchIndexHistory(), fetchActiveListings(), fetchHeartbeat(), fetchLatestFx()])
-      .then(([h, l, hb, f]) => {
+    Promise.all([
+      fetchIndexHistory(),
+      fetchActiveListings(),
+      fetchHeartbeat(),
+      fetchLatestFx(),
+      fetchCpiMonthly(),
+    ])
+      .then(([h, l, hb, f, c]) => {
         setHistory(h);
         setListings(l);
         setHeartbeat(hb);
         setFx(f);
+        setCpi(c);
       })
       .catch((e) => setError(e.message));
   }, []);
@@ -74,6 +85,9 @@ export default function Page() {
             <Metrics latest={latest} fx={fx} />
             <section className="mt-6">
               <HeadlineChart history={history} />
+            </section>
+            <section className="mt-6">
+              <MyCopy current={latest?.median_asking_dkk ?? null} cpi={cpi} />
             </section>
             <section className="mt-6 grid gap-6 lg:grid-cols-2">
               <RegionSpread regional={latest?.regional ?? null} national={latest?.median_asking_dkk ?? null} />
