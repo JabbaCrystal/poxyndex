@@ -39,7 +39,7 @@ function MarketToggle({
           className={
             "rounded-full px-3.5 py-1.5 font-medium transition-all " +
             (market === m
-              ? "bg-white/90 text-ink shadow"
+              ? "bg-iris-red text-white shadow"
               : "text-muted hover:text-cloud")
           }
         >

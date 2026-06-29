@@ -189,7 +189,7 @@ function Footer({ heartbeat }: { heartbeat: Heartbeat | null }) {
       <div className="mx-auto flex max-w-5xl flex-col gap-2 px-5 py-6 text-xs text-muted sm:flex-row sm:justify-between">
         <p>
           A non-commercial curiosity. Aggregated, anonymised data.{" "}
-          <a href="/methodology" className="hover:underline" style={{ color: "#57E0FF" }}>
+          <a href="/methodology" className="hover:underline" style={{ color: "#FF4D5E" }}>
             Methodology &amp; privacy →
           </a>
         </p>

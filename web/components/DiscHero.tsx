@@ -2,7 +2,7 @@
 
 import { useRef, useState, type CSSProperties, type MouseEvent } from "react";
 
-const BURST_COLORS = ["#FF4D5E", "#57E0FF", "#FFD56B", "#FF6BD6", "#7CFFB2", "#FFFFFF"];
+const BURST_COLORS = ["#FF4D5E", "#57E0FF", "#FFD56B", "#FF8A5B", "#7CFFB2", "#FFFFFF"];
 
 interface Particle {
   id: number;

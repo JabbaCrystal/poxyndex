@@ -39,14 +39,14 @@ export function RegionSpread({
                       className="h-full rounded-full"
                       style={{
                         width: `${pct}%`,
-                        background: "linear-gradient(90deg,#57E0FF,#E26BFF)",
+                        background: "linear-gradient(90deg,#FF4D5E,#57E0FF)",
                       }}
                     />
                   </div>
                   <span className="tabular w-16 shrink-0 text-right text-cloud">{Math.round(price)} kr</span>
                   <span
                     className="tabular w-12 shrink-0 text-right text-xs"
-                    style={{ color: ratio > 1 ? "#E26BFF" : "#9A93B4" }}
+                    style={{ color: ratio > 1 ? "#FF4D5E" : "#9A93B4" }}
                   >
                     {ratio ? `${ratio > 1 ? "+" : ""}${Math.round((ratio - 1) * 100)}%` : "—"}
                   </span>

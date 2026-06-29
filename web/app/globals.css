@@ -26,7 +26,7 @@ body {
     backdrop-filter: blur(8px);
   }
   .iri-text {
-    background: linear-gradient(100deg, #ff4d5e, #ff6bd6 26%, #57e0ff 58%, #ffd56b 84%, #ff4d5e);
+    background: linear-gradient(100deg, #ff4d5e, #57e0ff 46%, #ffd56b 80%, #ff4d5e);
     background-size: 200% auto;
     -webkit-background-clip: text;
     background-clip: text;
@@ -50,8 +50,8 @@ body {
     #ffd56b,
     #7cffb2,
     #57e0ff,
-    #6b8bff,
-    #ff6bd6,
+    #5bb8ff,
+    #ff7a6b,
     #ff4d5e
   );
   filter: saturate(1.15);
