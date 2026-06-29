@@ -1,17 +1,49 @@
 "use client";
 
 import { useEffect, useState, type FormEvent } from "react";
-import type { CpiPoint } from "@/lib/supabase";
+import {
+  fetchCommunityPaid,
+  upsertCommunityPaid,
+  type CpiPoint,
+} from "@/lib/supabase";
+import { REGION_NAMES } from "@/lib/types";
 import { CountUp } from "./CountUp";
 
 const LS_KEY = "poxyndex_mycopy";
+const DEVICE_KEY = "poxyndex_device";
+
+const PRICE_MIN = 10;
+const PRICE_MAX = 2000;
+const RELEASE_MONTH = "2007-01";
 
 interface Entry {
   paid: number;
   month: string; // 'YYYY-MM'
+  region: string;
 }
 
-/** CPI index for a month — exact, else the most recent earlier month. */
+interface Community {
+  median: number | null;
+  count: number;
+}
+
+/** Stable, anonymous, in-browser id (no PII) used to keep one row per device. */
+function deviceId(): string {
+  let id = localStorage.getItem(DEVICE_KEY);
+  if (!id) {
+    id = crypto.randomUUID();
+    localStorage.setItem(DEVICE_KEY, id);
+  }
+  return id;
+}
+
+function median(xs: number[]): number | null {
+  const s = xs.filter((n) => Number.isFinite(n)).sort((a, b) => a - b);
+  if (!s.length) return null;
+  const m = Math.floor(s.length / 2);
+  return s.length % 2 ? s[m]! : (s[m - 1]! + s[m]!) / 2;
+}
+
 function cpiFor(cpi: CpiPoint[], month: string): number | null {
   const exact = cpi.find((c) => c.month === month);
   if (exact) return exact.idx;
@@ -28,10 +60,18 @@ function monthLabel(month: string): string {
 export function MyCopy({ current, cpi }: { current: number | null; cpi: CpiPoint[] }) {
   const [paid, setPaid] = useState("");
   const [month, setMonth] = useState("");
+  const [region, setRegion] = useState("");
   const [entry, setEntry] = useState<Entry | null>(null);
+  const [community, setCommunity] = useState<Community>({ median: null, count: 0 });
   const maxMonth = typeof window !== "undefined" ? new Date().toISOString().slice(0, 7) : "";
 
+  async function refreshCommunity() {
+    const rows = await fetchCommunityPaid();
+    setCommunity({ median: median(rows.map((r) => r.paid_dkk)), count: rows.length });
+  }
+
   useEffect(() => {
+    void refreshCommunity();
     try {
       const raw = localStorage.getItem(LS_KEY);
       if (!raw) return;
@@ -40,22 +80,36 @@ export function MyCopy({ current, cpi }: { current: number | null; cpi: CpiPoint
         setEntry(v);
         setPaid(String(v.paid));
         setMonth(v.month);
+        setRegion(v.region ?? "");
       }
     } catch {
       /* ignore */
     }
   }, []);
 
-  function submit(e: FormEvent) {
+  async function submit(e: FormEvent) {
     e.preventDefault();
     const p = Math.round(Number(paid));
     if (!Number.isFinite(p) || p <= 0 || !month) return;
-    const v: Entry = { paid: p, month };
+    const v: Entry = { paid: p, month, region };
     setEntry(v);
     try {
       localStorage.setItem(LS_KEY, JSON.stringify(v));
     } catch {
       /* ignore */
+    }
+
+    // Anonymously join the community average — but only plausible values, and
+    // upserted by device id so repeated tries overwrite this device's one row.
+    const inBounds = p >= PRICE_MIN && p <= PRICE_MAX && month >= RELEASE_MONTH && month <= maxMonth;
+    if (inBounds) {
+      await upsertCommunityPaid({
+        device_id: deviceId(),
+        paid_dkk: p,
+        bought_month: month,
+        region: region || null,
+      });
+      void refreshCommunity();
     }
   }
 
@@ -63,6 +117,7 @@ export function MyCopy({ current, cpi }: { current: number | null; cpi: CpiPoint
     setEntry(null);
     setPaid("");
     setMonth("");
+    setRegion("");
     try {
       localStorage.removeItem(LS_KEY);
     } catch {
@@ -102,6 +157,21 @@ export function MyCopy({ current, cpi }: { current: number | null; cpi: CpiPoint
             className="rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-base text-cloud outline-none focus:border-iris-red"
           />
         </label>
+        <label className="flex flex-col gap-1 text-xs text-muted">
+          Region <span className="opacity-60">(optional)</span>
+          <select
+            value={region}
+            onChange={(e) => setRegion(e.target.value)}
+            className="rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-base text-cloud outline-none focus:border-iris-red"
+          >
+            <option value="">—</option>
+            {Object.entries(REGION_NAMES).map(([code, name]) => (
+              <option key={code} value={code}>
+                {name}
+              </option>
+            ))}
+          </select>
+        </label>
         <button
           type="submit"
           className="rounded-lg bg-iris-red px-4 py-2 text-sm font-semibold text-white transition-opacity hover:opacity-90"
@@ -115,44 +185,94 @@ export function MyCopy({ current, cpi }: { current: number | null; cpi: CpiPoint
         )}
       </form>
 
-      {entry && <Result entry={entry} current={current} cpi={cpi} />}
+      <p className="mt-2 text-[11px] text-muted/60">
+        Your entry anonymously joins the community average — we store only a random in-browser ID, the
+        price, the month, and optional region. No name, email, or IP. &ldquo;Clear&rdquo; removes it.
+      </p>
+
+      {entry && <Result entry={entry} current={current} cpi={cpi} community={community} />}
+      {!entry && community.count > 0 && community.median != null && (
+        <p className="mt-4 border-t border-white/10 pt-4 text-sm text-muted">
+          🫂 <strong className="text-cloud">{community.count}</strong>{" "}
+          {community.count === 1 ? "collector has" : "collectors have"} logged a copy — median paid{" "}
+          <strong className="text-cloud">{Math.round(community.median).toLocaleString("da-DK")} kr</strong>. Add yours above.
+        </p>
+      )}
     </div>
   );
 }
 
-function Result({ entry, current, cpi }: { entry: Entry; current: number | null; cpi: CpiPoint[] }) {
-  if (current == null) {
-    return (
-      <p className="mt-5 rounded-lg border border-white/10 bg-white/5 px-4 py-3 text-sm text-muted">
-        No copies are on the market right now, so there&apos;s nothing to value yours against. Check back when one&apos;s listed.
-      </p>
-    );
-  }
-
+function Result({
+  entry,
+  current,
+  cpi,
+  community,
+}: {
+  entry: Entry;
+  current: number | null;
+  cpi: CpiPoint[];
+  community: Community;
+}) {
   const { paid, month } = entry;
-  const deltaPct = (current - paid) / paid;
-  const up = current >= paid;
+  const pos = "#7CFFB2";
+  const neg = "#FF7A6B";
 
-  // Real terms: inflate what they paid to today's kroner via CPI.
   const cpiThen = cpiFor(cpi, month);
   const cpiNow = cpi.length ? cpi[cpi.length - 1]!.idx : null;
   const paidToday = cpiThen && cpiNow ? paid * (cpiNow / cpiThen) : null;
-  const realPct = paidToday ? (current - paidToday) / paidToday : null;
 
-  // Annualised (only meaningful past ~3 months held).
   const purchased = new Date(`${month}-15`);
   const years = (Date.now() - purchased.getTime()) / (365.25 * 86_400_000);
-  const annual = years > 0.25 && paid > 0 ? Math.pow(current / paid, 1 / years) - 1 : null;
-
-  const pos = "#7CFFB2";
-  const neg = "#FF7A6B";
-  const accent = up ? pos : neg;
 
   return (
     <div className="mt-5 border-t border-white/10 pt-4">
-      <div className="text-[11px] font-semibold uppercase tracking-wider text-muted">
-        Estimated value today
-      </div>
+      {current == null ? (
+        <p className="rounded-lg border border-white/10 bg-white/5 px-4 py-3 text-sm text-muted">
+          No copies are on the market right now, so there&apos;s nothing to value yours against. Check back when one&apos;s listed.
+        </p>
+      ) : (
+        <MarketResult paid={paid} month={month} current={current} paidToday={paidToday} years={years} pos={pos} neg={neg} />
+      )}
+
+      {community.median != null && community.count > 0 && (
+        <p className="mt-3 text-xs text-muted">
+          🫂 Across <strong className="text-cloud">{community.count}</strong> self-reported{" "}
+          {community.count === 1 ? "copy" : "copies"}, the median paid is{" "}
+          <strong className="text-cloud">{Math.round(community.median).toLocaleString("da-DK")} kr</strong>
+          {" — "}
+          {paid > community.median ? "you paid above the pack." : paid < community.median ? "you got it below the pack." : "right on the median."}
+        </p>
+      )}
+    </div>
+  );
+}
+
+function MarketResult({
+  paid,
+  month,
+  current,
+  paidToday,
+  years,
+  pos,
+  neg,
+}: {
+  paid: number;
+  month: string;
+  current: number;
+  paidToday: number | null;
+  years: number;
+  pos: string;
+  neg: string;
+}) {
+  const deltaPct = (current - paid) / paid;
+  const up = current >= paid;
+  const accent = up ? pos : neg;
+  const realPct = paidToday ? (current - paidToday) / paidToday : null;
+  const annual = years > 0.25 && paid > 0 ? Math.pow(current / paid, 1 / years) - 1 : null;
+
+  return (
+    <>
+      <div className="text-[11px] font-semibold uppercase tracking-wider text-muted">Estimated value today</div>
       <div className="tabular mt-1 font-serif text-4xl font-bold leading-none">
         <CountUp value={current} className="iri-text" />
         <span className="ml-2 align-top text-lg text-muted">kr</span>
@@ -176,8 +296,8 @@ function Result({ entry, current, cpi }: { entry: Entry; current: number | null;
         {realPct != null && paidToday != null && (
           <li>
             After inflation, that&apos;s{" "}
-            <strong className="text-cloud">{Math.round(paidToday).toLocaleString("da-DK")} kr</strong>{" "}
-            in today&apos;s money — so{" "}
+            <strong className="text-cloud">{Math.round(paidToday).toLocaleString("da-DK")} kr</strong> in
+            today&apos;s money — so{" "}
             <strong style={{ color: realPct >= 0 ? pos : neg }}>
               {realPct >= 0 ? "+" : ""}
               {Math.round(realPct * 100)}% in real terms
@@ -201,7 +321,7 @@ function Result({ entry, current, cpi }: { entry: Entry; current: number | null;
       <p className="mt-3 text-[11px] text-muted/60">
         Based on the current median asking price — an estimate, not a guaranteed sale.
       </p>
-    </div>
+    </>
   );
 }
 

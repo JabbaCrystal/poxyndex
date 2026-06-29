@@ -49,6 +49,39 @@ export async function fetchCpiMonthly(): Promise<CpiPoint[]> {
   return (data ?? []).filter((d): d is CpiPoint => d.idx != null);
 }
 
+export interface CommunityRow {
+  paid_dkk: number;
+  region: string | null;
+}
+
+/** Self-reported community submissions. Returns [] on any error (e.g. table
+ *  not created yet) so the feature degrades gracefully. */
+export async function fetchCommunityPaid(): Promise<CommunityRow[]> {
+  try {
+    const { data, error } = await supabase.from("community_paid").select("paid_dkk, region");
+    if (error) return [];
+    return (data ?? []) as CommunityRow[];
+  } catch {
+    return [];
+  }
+}
+
+/** Upsert this device's single data point. Silently no-ops on error. */
+export async function upsertCommunityPaid(row: {
+  device_id: string;
+  paid_dkk: number;
+  bought_month: string;
+  region: string | null;
+}): Promise<void> {
+  try {
+    await supabase
+      .from("community_paid")
+      .upsert({ ...row, updated_at: new Date().toISOString() }, { onConflict: "device_id" });
+  } catch {
+    /* ignore — community layer is best-effort */
+  }
+}
+
 export async function fetchLatestFx(): Promise<number | null> {
   const { data } = await supabase
     .from("fx_daily")

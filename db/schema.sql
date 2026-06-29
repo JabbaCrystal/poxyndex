@@ -164,3 +164,35 @@ insert into regions (code, name) values
   ('midtjylland', 'Region Midtjylland'),
   ('nordjylland', 'Region Nordjylland')
 on conflict (code) do nothing;
+
+-- ============================================================================
+-- community_paid: self-reported "what I paid" data points for the "Value your
+-- own copy" tool. Anonymous and quarantined — it NEVER feeds the scraped index.
+--
+-- Anti-pollution safeguards:
+--   * One row per device_id (a random in-browser UUID) — testing different
+--     values just overwrites your own single row (the frontend upserts).
+--   * CHECK constraints bound price + month server-side, so junk is rejected
+--     regardless of the client.
+--   * The frontend aggregates with a median, so any survivor can't move it.
+-- No name, email, or IP is stored.
+-- ============================================================================
+create table if not exists community_paid (
+  device_id    text primary key,                 -- random client-generated UUID (pseudonymous)
+  paid_dkk     int  not null check (paid_dkk between 10 and 2000),
+  bought_month text not null check (bought_month >= '2007-01' and bought_month <= '2100-12'),
+  region       text references regions(code),
+  created_at   timestamptz not null default now(),
+  updated_at   timestamptz not null default now()
+);
+
+alter table community_paid enable row level security;
+
+-- Public read (for the aggregate), and anon insert/update for the upsert path.
+-- Bounds are enforced by the CHECK constraints above, so anon writes are safe.
+drop policy if exists community_read   on community_paid;
+drop policy if exists community_insert on community_paid;
+drop policy if exists community_update on community_paid;
+create policy community_read   on community_paid for select to anon using (true);
+create policy community_insert on community_paid for insert to anon with check (true);
+create policy community_update on community_paid for update to anon using (true) with check (true);

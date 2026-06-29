@@ -69,6 +69,21 @@ export default function Methodology() {
           .
         </p>
 
+        <h2 className="mt-8 font-serif text-xl font-bold text-cloud">Community data</h2>
+        <p className="mt-2 text-muted">
+          The &ldquo;value your own copy&rdquo; tool lets you log what you paid. That joins an
+          anonymous, self-reported community average shown <em>separately</em> from the scraped
+          index — it never affects the headline Poxyndex. We store only a random in-browser ID,
+          the price, the month, and an optional region — no name, email, or IP. Each device keeps a
+          single entry (re-submitting just overwrites it), values are bounds-checked, and the figure
+          shown is a median, so stray inputs can&apos;t skew it. Use &ldquo;Clear&rdquo; to remove
+          your entry anytime, or email{" "}
+          <a className="hover:underline" style={{ color: "#FF4A33" }} href="mailto:jabbacrystal@gmail.com">
+            jabbacrystal@gmail.com
+          </a>
+          .
+        </p>
+
         <p className="mt-8 text-xs text-muted/70">
           Not affiliated with The Economist, Nordisk Film, DBA, SpaceX, or anyone
           who appears in <em>Mr. Poxycat &amp; Co.</em>
