@@ -58,7 +58,7 @@ export function HeadlineChart({ history }: { history: IndexDaily[] }) {
             type="monotone"
             dataKey="nominal"
             name="Asking price"
-            stroke="#FF4D5E"
+            stroke="#FF4A33"
             strokeWidth={2.5}
             dot={false}
             connectNulls
@@ -67,7 +67,7 @@ export function HeadlineChart({ history }: { history: IndexDaily[] }) {
             type="monotone"
             dataKey="real"
             name="In 2025-kroner"
-            stroke="#57E0FF"
+            stroke="#FFC24D"
             strokeWidth={1.5}
             strokeDasharray="4 3"
             dot={false}

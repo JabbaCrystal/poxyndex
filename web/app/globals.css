@@ -10,7 +10,7 @@ body {
   background-color: #0b0a12;
   /* stage spotlight + soft iridescent washes */
   background-image:
-    radial-gradient(1100px 560px at 50% -8%, rgba(255, 77, 94, 0.20), transparent 60%),
+    radial-gradient(1100px 560px at 50% -8%, rgba(255, 74, 51, 0.20), transparent 60%),
     radial-gradient(820px 480px at 88% 6%, rgba(87, 224, 255, 0.10), transparent 60%),
     radial-gradient(680px 480px at 8% 18%, rgba(255, 138, 91, 0.12), transparent 60%);
   background-attachment: fixed;
@@ -26,7 +26,7 @@ body {
     backdrop-filter: blur(8px);
   }
   .iri-text {
-    background: linear-gradient(100deg, #ff4d5e, #57e0ff 46%, #ffd56b 80%, #ff4d5e);
+    background: linear-gradient(100deg, #ff4a33, #ffb13d 42%, #ffd56b 72%, #ff4a33);
     background-size: 200% auto;
     -webkit-background-clip: text;
     background-clip: text;
@@ -36,7 +36,7 @@ body {
   .iri-hr {
     height: 3px;
     border: 0;
-    background: linear-gradient(90deg, transparent, #ff4d5e, #57e0ff, #ffd56b, transparent);
+    background: linear-gradient(90deg, transparent, #ff4a33, #ffb13d, #ffd56b, transparent);
   }
 }
 
@@ -45,14 +45,14 @@ body {
   border-radius: 50%;
   background: conic-gradient(
     from 210deg,
-    #ff4d5e,
-    #ff8a5b,
+    #ff4a33,
+    #ff8a4d,
     #ffd56b,
     #7cffb2,
     #57e0ff,
     #5bb8ff,
-    #ff7a6b,
-    #ff4d5e
+    #ff7a4d,
+    #ff4a33
   );
   filter: saturate(1.15);
 }

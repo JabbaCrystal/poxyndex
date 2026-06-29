@@ -45,7 +45,7 @@ export function SupplyList({ listings }: { listings: PublicListing[] }) {
                     target="_blank"
                     rel="noopener noreferrer nofollow"
                     className="text-iris-cyan hover:underline"
-                    style={{ color: "#FF4D5E" }}
+                    style={{ color: "#FF4A33" }}
                   >
                     {SOURCE_LABELS[l.source] ?? l.source} ↗
                   </a>
@@ -59,7 +59,7 @@ export function SupplyList({ listings }: { listings: PublicListing[] }) {
       {reference && (
         <p className="mt-3 border-t border-white/10 pt-3 text-xs text-muted">
           Official retail (
-          <a href={reference.source_url} target="_blank" rel="noopener noreferrer nofollow" style={{ color: "#FF4D5E" }}>
+          <a href={reference.source_url} target="_blank" rel="noopener noreferrer nofollow" style={{ color: "#FF4A33" }}>
             Laserdisken
           </a>
           ):{" "}

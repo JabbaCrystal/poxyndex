@@ -11,7 +11,7 @@ interface Spark {
   color: string;
 }
 
-const COLORS = ["#FF4D5E", "#57E0FF", "#FFD56B", "#FFFFFF", "#FF8A5B", "#7CFFB2"];
+const COLORS = ["#FF4A33", "#FFC24D", "#FFD56B", "#FFFFFF", "#FF8A5B", "#7CFFB2"];
 
 /**
  * The magician's glitter. Positions are generated AFTER mount (client only) so

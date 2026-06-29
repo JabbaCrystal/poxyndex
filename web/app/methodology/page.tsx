@@ -4,7 +4,7 @@ export default function Methodology() {
   return (
     <main className="relative min-h-screen">
       <article className="mx-auto max-w-2xl px-5 py-12">
-        <a href="/" className="text-sm hover:underline" style={{ color: "#FF4D5E" }}>
+        <a href="/" className="text-sm hover:underline" style={{ color: "#FF4A33" }}>
           ← Back to the index
         </a>
         <h1 className="mt-4 font-serif text-3xl font-bold">
@@ -63,7 +63,7 @@ export default function Methodology() {
           <strong className="text-cloud">not</strong> store or display seller
           names, contact details, exact addresses, or listing photos. If you are a
           seller and want a data point removed, email{" "}
-          <a className="hover:underline" style={{ color: "#FF4D5E" }} href="mailto:jabbacrystal@gmail.com">
+          <a className="hover:underline" style={{ color: "#FF4A33" }} href="mailto:jabbacrystal@gmail.com">
             jabbacrystal@gmail.com
           </a>
           .

@@ -2,7 +2,7 @@
 
 import { useRef, useState, type CSSProperties, type MouseEvent } from "react";
 
-const BURST_COLORS = ["#FF4D5E", "#57E0FF", "#FFD56B", "#FF8A5B", "#7CFFB2", "#FFFFFF"];
+const BURST_COLORS = ["#FF4A33", "#FFC24D", "#FFD56B", "#FF8A5B", "#7CFFB2", "#FFFFFF"];
 
 interface Particle {
   id: number;
@@ -79,7 +79,7 @@ export function DiscHero() {
           onClick={pop}
           aria-label="Tap the disc for a little magic"
           className="relative h-32 w-32 shrink-0 cursor-pointer appearance-none border-0 bg-transparent p-0 sm:h-48 sm:w-48"
-          style={{ filter: "drop-shadow(0 12px 44px rgba(255,77,94,0.34))" } as CSSProperties}
+          style={{ filter: "drop-shadow(0 12px 44px rgba(255,74,51,0.34))" } as CSSProperties}
         >
           <span className="spin-slow absolute inset-0 block">
             <span className="disc absolute inset-0 block" />

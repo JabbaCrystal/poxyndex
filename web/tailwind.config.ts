@@ -11,7 +11,7 @@ const config: Config = {
         cloud: "#ECEAF6", // primary text
         muted: "#9A93B4", // secondary text
         iris: {
-          red: "#FF4D5E",
+          red: "#FF4A33",
           magenta: "#E26BFF",
           cyan: "#57E0FF",
           gold: "#FFD56B",
