@@ -4,6 +4,7 @@ import { useEffect, useState, type FormEvent } from "react";
 import {
   fetchCommunityPaid,
   upsertCommunityPaid,
+  deleteCommunityPaid,
   type CpiPoint,
 } from "@/lib/supabase";
 import { REGION_NAMES } from "@/lib/types";
@@ -113,7 +114,8 @@ export function MyCopy({ current, cpi }: { current: number | null; cpi: CpiPoint
     }
   }
 
-  function clear() {
+  async function clear() {
+    const id = localStorage.getItem(DEVICE_KEY);
     setEntry(null);
     setPaid("");
     setMonth("");
@@ -122,6 +124,10 @@ export function MyCopy({ current, cpi }: { current: number | null; cpi: CpiPoint
       localStorage.removeItem(LS_KEY);
     } catch {
       /* ignore */
+    }
+    if (id) {
+      await deleteCommunityPaid(id);
+      void refreshCommunity();
     }
   }
 

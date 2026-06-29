@@ -193,6 +193,10 @@ alter table community_paid enable row level security;
 drop policy if exists community_read   on community_paid;
 drop policy if exists community_insert on community_paid;
 drop policy if exists community_update on community_paid;
+drop policy if exists community_delete on community_paid;
 create policy community_read   on community_paid for select to anon using (true);
 create policy community_insert on community_paid for insert to anon with check (true);
 create policy community_update on community_paid for update to anon using (true) with check (true);
+-- lets a visitor remove their own row via "Clear" (rows are keyed by an
+-- unguessable random device id, so in practice only the owner can target it).
+create policy community_delete on community_paid for delete to anon using (true);

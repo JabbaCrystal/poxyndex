@@ -82,6 +82,15 @@ export async function upsertCommunityPaid(row: {
   }
 }
 
+/** Remove this device's community row (the "Clear" action). Best-effort. */
+export async function deleteCommunityPaid(deviceId: string): Promise<void> {
+  try {
+    await supabase.from("community_paid").delete().eq("device_id", deviceId);
+  } catch {
+    /* ignore */
+  }
+}
+
 export async function fetchLatestFx(): Promise<number | null> {
   const { data } = await supabase
     .from("fx_daily")
