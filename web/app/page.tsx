@@ -8,6 +8,7 @@ import { RegionSpread } from "@/components/RegionSpread";
 import { SupplyList } from "@/components/SupplyList";
 import { DiscHero } from "@/components/DiscHero";
 import { Sparkles } from "@/components/Sparkles";
+import { CountUp } from "@/components/CountUp";
 import {
   fetchActiveListings,
   fetchHeartbeat,
@@ -50,6 +51,14 @@ export default function Page() {
   return (
     <main className="relative min-h-screen overflow-hidden">
       <Header market={market} setMarket={setMarket} />
+
+      {/* full-bleed glitter behind the hero (spans the viewport, so it never
+          clips awkwardly at a content edge) */}
+      {market === "dk" && (
+        <div className="pointer-events-none absolute inset-x-0 top-0 z-0 h-[680px]">
+          <Sparkles count={30} />
+        </div>
+      )}
 
       <div className="relative z-10 mx-auto max-w-5xl px-5 pb-16">
         {market === "world" ? (
@@ -99,7 +108,7 @@ function Hero({ latest }: { latest: IndexDaily | null }) {
           Headline price
         </div>
         <div className="tabular mt-1 font-serif text-7xl font-bold leading-none">
-          <span className="iri-text">{median != null ? Math.round(median) : "—"}</span>
+          <CountUp value={median} className="iri-text" />
           <span className="ml-2 align-top text-2xl text-muted">kr</span>
         </div>
         <div className="mt-2 text-sm text-muted">

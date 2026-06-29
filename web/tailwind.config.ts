@@ -11,10 +11,10 @@ const config: Config = {
         cloud: "#ECEAF6", // primary text
         muted: "#9A93B4", // secondary text
         iris: {
+          red: "#FF4D5E",
           magenta: "#E26BFF",
           cyan: "#57E0FF",
           gold: "#FFD56B",
-          violet: "#A57BFF",
           mint: "#7CFFB2",
         },
       },

@@ -11,7 +11,7 @@ interface Spark {
   color: string;
 }
 
-const COLORS = ["#E26BFF", "#57E0FF", "#FFD56B", "#FFFFFF", "#A57BFF", "#7CFFB2"];
+const COLORS = ["#FF4D5E", "#57E0FF", "#FFD56B", "#FFFFFF", "#FF6BD6", "#7CFFB2"];
 
 /**
  * The magician's glitter. Positions are generated AFTER mount (client only) so
@@ -23,8 +23,9 @@ export function Sparkles({ count = 18, className = "" }: { count?: number; class
   useEffect(() => {
     setItems(
       Array.from({ length: count }, () => ({
-        left: Math.random() * 100,
-        top: Math.random() * 100,
+        // inset from the edges so sparkles never hard-clip at the container border
+        left: 3 + Math.random() * 91,
+        top: 3 + Math.random() * 90,
         size: 6 + Math.random() * 16,
         dur: 2.2 + Math.random() * 3.6,
         delay: Math.random() * 4.5,
@@ -34,7 +35,7 @@ export function Sparkles({ count = 18, className = "" }: { count?: number; class
   }, [count]);
 
   return (
-    <div className={`pointer-events-none absolute inset-0 overflow-hidden ${className}`} aria-hidden>
+    <div className={`pointer-events-none absolute inset-0 ${className}`} aria-hidden>
       {items.map((s, i) => (
         <svg
           key={i}
