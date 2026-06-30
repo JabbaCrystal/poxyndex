@@ -4,12 +4,13 @@ import { useEffect, useState, type FormEvent } from "react";
 import {
   fetchCommunityPaid,
   upsertCommunityPaid,
-  deleteCommunityPaid,
   type CpiPoint,
+  type CommunityRow,
 } from "@/lib/supabase";
 import { REGION_NAMES } from "@/lib/types";
 import { CountUp } from "./CountUp";
 import { MyCopyChart } from "./MyCopyChart";
+import { CommunityHistory } from "./CommunityHistory";
 
 const LS_KEY = "poxyndex_mycopy";
 const DEVICE_KEY = "poxyndex_device";
@@ -65,10 +66,12 @@ export function MyCopy({ current, cpi }: { current: number | null; cpi: CpiPoint
   const [region, setRegion] = useState("");
   const [entry, setEntry] = useState<Entry | null>(null);
   const [community, setCommunity] = useState<Community>({ median: null, count: 0 });
+  const [communityRows, setCommunityRows] = useState<CommunityRow[]>([]);
   const maxMonth = typeof window !== "undefined" ? new Date().toISOString().slice(0, 7) : "";
 
   async function refreshCommunity() {
     const rows = await fetchCommunityPaid();
+    setCommunityRows(rows);
     setCommunity({ median: median(rows.map((r) => r.paid_dkk)), count: rows.length });
   }
 
@@ -115,8 +118,9 @@ export function MyCopy({ current, cpi }: { current: number | null; cpi: CpiPoint
     }
   }
 
-  async function clear() {
-    const id = localStorage.getItem(DEVICE_KEY);
+  function clear() {
+    // Resets the tool on this device only — the anonymous community point stays
+    // (first-value-wins). Genuine removal is via the email on the methodology page.
     setEntry(null);
     setPaid("");
     setMonth("");
@@ -125,10 +129,6 @@ export function MyCopy({ current, cpi }: { current: number | null; cpi: CpiPoint
       localStorage.removeItem(LS_KEY);
     } catch {
       /* ignore */
-    }
-    if (id) {
-      await deleteCommunityPaid(id);
-      void refreshCommunity();
     }
   }
 
@@ -194,7 +194,8 @@ export function MyCopy({ current, cpi }: { current: number | null; cpi: CpiPoint
 
       <p className="mt-2 text-[11px] text-muted/60">
         Your entry anonymously joins the community average — we store only a random in-browser ID, the
-        price, the month, and optional region. No name, email, or IP. &ldquo;Clear&rdquo; removes it.
+        price, the month, and optional region. No name, email, or IP. &ldquo;Clear&rdquo; resets this
+        tool on your device; your anonymous data point stays in the average (email to remove it).
       </p>
 
       {entry && <Result entry={entry} current={current} cpi={cpi} community={community} />}
@@ -205,6 +206,11 @@ export function MyCopy({ current, cpi }: { current: number | null; cpi: CpiPoint
           <strong className="text-cloud">{Math.round(community.median).toLocaleString("da-DK")} kr</strong>. Add yours above.
         </p>
       )}
+
+      <CommunityHistory
+        rows={communityRows}
+        userEntry={entry ? { paid: entry.paid, month: entry.month } : null}
+      />
     </div>
   );
 }

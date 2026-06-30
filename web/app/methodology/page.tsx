@@ -75,9 +75,10 @@ export default function Methodology() {
           anonymous, self-reported community average shown <em>separately</em> from the scraped
           index — it never affects the headline Poxyndex. We store only a random in-browser ID,
           the price, the month, and an optional region — no name, email, or IP. Each device keeps a
-          single entry (re-submitting just overwrites it), values are bounds-checked, and the figure
-          shown is a median, so stray inputs can&apos;t skew it. Use &ldquo;Clear&rdquo; to remove
-          your entry anytime, or email{" "}
+          single entry (the first value is kept, so idle testing can&apos;t pile up), values are
+          bounds-checked, and the figure shown is a median, so stray inputs can&apos;t skew it.
+          &ldquo;Clear&rdquo; resets the tool on your device; your anonymous point remains in the
+          average — to remove it, email{" "}
           <a className="hover:underline" style={{ color: "#FF4A33" }} href="mailto:jabbacrystal@gmail.com">
             jabbacrystal@gmail.com
           </a>

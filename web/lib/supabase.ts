@@ -52,13 +52,16 @@ export async function fetchCpiMonthly(): Promise<CpiPoint[]> {
 export interface CommunityRow {
   paid_dkk: number;
   region: string | null;
+  bought_month: string;
 }
 
 /** Self-reported community submissions. Returns [] on any error (e.g. table
  *  not created yet) so the feature degrades gracefully. */
 export async function fetchCommunityPaid(): Promise<CommunityRow[]> {
   try {
-    const { data, error } = await supabase.from("community_paid").select("paid_dkk, region");
+    const { data, error } = await supabase
+      .from("community_paid")
+      .select("paid_dkk, region, bought_month");
     if (error) return [];
     return (data ?? []) as CommunityRow[];
   } catch {
@@ -66,7 +69,9 @@ export async function fetchCommunityPaid(): Promise<CommunityRow[]> {
   }
 }
 
-/** Upsert this device's single data point. Silently no-ops on error. */
+/** Record this device's data point — FIRST value wins (ignoreDuplicates), so a
+ *  curious user's later tries never overwrite their original contribution.
+ *  Silently no-ops on error. */
 export async function upsertCommunityPaid(row: {
   device_id: string;
   paid_dkk: number;
@@ -76,7 +81,7 @@ export async function upsertCommunityPaid(row: {
   try {
     await supabase
       .from("community_paid")
-      .upsert({ ...row, updated_at: new Date().toISOString() }, { onConflict: "device_id" });
+      .upsert(row, { onConflict: "device_id", ignoreDuplicates: true });
   } catch {
     /* ignore — community layer is best-effort */
   }
