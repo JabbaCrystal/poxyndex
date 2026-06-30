@@ -21,6 +21,7 @@ import {
 } from "@/lib/supabase";
 import type { IndexDaily, PublicListing, Heartbeat } from "@/lib/types";
 import { useLang } from "@/lib/i18n";
+import { FOOTER_QUOTES } from "@/lib/quotes";
 
 const SPACEX_USD_PER_SHARE = 220;
 const FX_FALLBACK = 6.9;
@@ -129,6 +130,9 @@ function Hero({ latest }: { latest: IndexDaily | null }) {
         <div className="mt-2 text-sm text-muted">
           {t(count === 1 ? "hero.copies_one" : "hero.copies_other", { n: count })}
         </div>
+        <p className="mt-1 text-[11px] italic text-muted/50">
+          🏦 Ikke råd? Prøv at spørge banken.
+        </p>
       </div>
 
       {latest?.meta?.note && (
@@ -214,8 +218,20 @@ function RestOfWorld() {
 
 function Footer({ heartbeat, locale }: { heartbeat: Heartbeat | null; locale: string }) {
   const { t } = useLang();
+  const [qi, setQi] = useState(0);
+  useEffect(() => {
+    setQi(Math.floor(Math.random() * FOOTER_QUOTES.length));
+  }, []);
+  const q = FOOTER_QUOTES[qi]!;
+
   return (
     <footer className="relative z-10 border-t border-white/5">
+      <figure className="mx-auto max-w-5xl px-5 pt-6 text-center">
+        <blockquote className="font-serif text-sm italic text-cloud/70">«{q.da}»</blockquote>
+        <figcaption className="mt-0.5 text-[11px] text-muted/70">
+          — {q.who} · <span className="italic">{q.clip}</span>
+        </figcaption>
+      </figure>
       <div className="mx-auto flex max-w-5xl flex-col gap-2 px-5 py-6 text-xs text-muted sm:flex-row sm:justify-between">
         <p>
           {t("foot.tagline")}{" "}
