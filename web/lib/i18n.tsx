@@ -35,12 +35,17 @@ const da: Record<string, string> = {
   "metric.hr": "t",
 
   "chart.title": "Poxyndekset over tid",
-  "chart.subtitle": "nominelt vs. faste kroner",
+  "chart.subtitle": "fra ny til andenhånd · 2011–i dag",
   "chart.collecting": "Indsamler historik…",
   "chart.collecting_body":
     "Poxyndekset skal bruge mindst to daglige aflæsninger for at tegne en tendens. Kom igen i morgen — dette marked bevæger sig i en sjælden dvd's tempo.",
   "chart.asking": "Udbudspris",
   "chart.real": "I 2025-kroner",
+  "chart.k_retail": "Detail (ny)",
+  "chart.k_asking": "Andenhånd · udbudt",
+  "chart.k_sold": "Andenhånd · solgt",
+  "chart.live": "Live (nu)",
+  "chart.sources": "Kilder",
 
   "region.title": "Regionalt Poxy-PPP",
   "region.desc": "Hvor er en Poxycat over- eller undervurderet? Median udbudspris pr. region.",
@@ -184,12 +189,17 @@ const en: Record<string, string> = {
   "metric.hr": "hr",
 
   "chart.title": "The Poxyndex over time",
-  "chart.subtitle": "nominal vs. constant kroner",
+  "chart.subtitle": "from new to second-hand · 2011–today",
   "chart.collecting": "Collecting history…",
   "chart.collecting_body":
     "The Poxyndex needs at least two daily readings to draw a trend. Come back tomorrow — this market moves at the speed of a rare DVD.",
   "chart.asking": "Asking price",
   "chart.real": "In 2025-kroner",
+  "chart.k_retail": "Retail (new)",
+  "chart.k_asking": "Second-hand · asking",
+  "chart.k_sold": "Second-hand · sold",
+  "chart.live": "Live (now)",
+  "chart.sources": "Sources",
 
   "region.title": "Regional Poxy-PPP",
   "region.desc": "Where is a Poxycat over- or under-valued? Median asking price by region.",
