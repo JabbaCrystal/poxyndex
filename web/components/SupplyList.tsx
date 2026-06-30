@@ -1,6 +1,5 @@
 import { REGION_NAMES, type PublicListing } from "@/lib/types";
 import { useLang } from "@/lib/i18n";
-import { LATEST_RETAIL } from "@/lib/retailHistory";
 
 const SOURCE_LABELS: Record<string, string> = {
   dba: "DBA",
@@ -52,21 +51,6 @@ export function SupplyList({ listings }: { listings: PublicListing[] }) {
             ))}
           </tbody>
         </table>
-      )}
-
-      {LATEST_RETAIL && (
-        <p className="mt-3 border-t border-white/10 pt-3 text-xs text-muted">
-          {t("supply.retail")} (
-          <a
-            href={LATEST_RETAIL.sourceUrl}
-            target="_blank"
-            rel="noopener noreferrer nofollow"
-            style={{ color: "#FF4A33" }}
-          >
-            {LATEST_RETAIL.source}, {LATEST_RETAIL.year}
-          </a>
-          ): <strong className="text-cloud">{LATEST_RETAIL.price} kr</strong> · {t("supply.unobtainable")}.
-        </p>
       )}
     </div>
   );

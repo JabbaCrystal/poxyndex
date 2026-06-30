@@ -10,6 +10,7 @@ import { DiscHero } from "@/components/DiscHero";
 import { Sparkles } from "@/components/Sparkles";
 import { CountUp } from "@/components/CountUp";
 import { MyCopy } from "@/components/MyCopy";
+import { HistoryAnchors } from "@/components/HistoryAnchors";
 import {
   fetchActiveListings,
   fetchCpiMonthly,
@@ -84,6 +85,9 @@ export default function Page() {
             <Metrics latest={latest} fx={fx} />
             <section className="mt-6">
               <HeadlineChart history={history} />
+            </section>
+            <section className="mt-6">
+              <HistoryAnchors />
             </section>
             <section className="mt-6">
               <MyCopy current={latest?.median_asking_dkk ?? null} cpi={cpi} />

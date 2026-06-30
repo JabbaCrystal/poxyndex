@@ -56,6 +56,15 @@ const da: Record<string, string> = {
   "supply.retail": "Officiel detailpris",
   "supply.unobtainable": "Udgået — kan ikke skaffes ny",
 
+  "hist.title": "Historiske nedslag",
+  "hist.desc":
+    "Verificerede, daterede priser fra offentlige kilder — fra dengang den var ny til andenhåndshandler i dag.",
+  "hist.tag_retail": "Ny · detail",
+  "hist.tag_sold": "Brugt · solgt",
+  "hist.tag_asking": "Brugt · udbudt",
+  "hist.caption":
+    "Spredte, enkeltvis kildebelagte nedslag — ikke en kurve. Hvert punkt linker til sin kilde. Vokser efterhånden som flere daterede omtaler dukker op.",
+
   "copy.title": "Vurdér dit eget eksemplar",
   "copy.subtitle": "Har du købt et engang? Se hvordan det har klaret sig — mod markedet og mod inflationen.",
   "copy.paid": "Hvad du betalte (kr)",
@@ -195,6 +204,15 @@ const en: Record<string, string> = {
   "supply.col_source": "Source",
   "supply.retail": "Official retail",
   "supply.unobtainable": "Udgået — unobtainable new",
+
+  "hist.title": "Historical anchors",
+  "hist.desc":
+    "Verified, dated prices from public sources — from when it was new to second-hand trades today.",
+  "hist.tag_retail": "New · retail",
+  "hist.tag_sold": "Used · sold",
+  "hist.tag_asking": "Used · asking",
+  "hist.caption":
+    "Sparse, individually sourced data points — not a fitted trend. Each links to its source. Grows as more dated mentions surface.",
 
   "copy.title": "Value your own copy",
   "copy.subtitle": "Bought one once? See how it's aged — against the market and against inflation.",
