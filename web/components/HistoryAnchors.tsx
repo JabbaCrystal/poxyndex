@@ -22,9 +22,13 @@ export function HistoryAnchors() {
   const anchors = ANCHORS_BY_DATE;
   if (anchors.length === 0) return null;
 
-  const years = anchors.map((a) => a.year);
-  const min = Math.min(...years);
-  const max = Math.max(...years);
+  // Position dots by fractional year (year + month) so clustered recent points
+  // separate instead of stacking. These are individual anchors of different
+  // kinds — deliberately no connecting line, this is not a fitted trend.
+  const frac = (a: PriceAnchor) => a.year + ((a.month ?? 1) - 1) / 12;
+  const fracs = anchors.map(frac);
+  const min = Math.min(...fracs);
+  const max = Math.max(...fracs);
   const span = Math.max(1, max - min);
 
   return (
@@ -32,24 +36,24 @@ export function HistoryAnchors() {
       <h3 className="font-serif text-lg font-bold text-cloud">{t("hist.title")}</h3>
       <p className="mb-2 text-xs text-muted">{t("hist.desc")}</p>
 
-      {/* Sparse timeline — dots positioned by year, no connecting line (these are
-          individual anchors of different kinds, not a fitted trend). */}
-      <div className="relative mx-1 mb-9 mt-7 h-px bg-white/10">
+      <div className="relative mx-1 mb-8 mt-7 h-px bg-white/10">
         {anchors.map((a, i) => {
-          const left = `${((a.year - min) / span) * 100}%`;
+          const left = `${((frac(a) - min) / span) * 100}%`;
           return (
-            <span key={i} className="absolute -translate-x-1/2" style={{ left }}>
-              <span
-                className="block h-2.5 w-2.5 -translate-y-1/2 rounded-full ring-2 ring-ink"
-                style={{ background: color(a) }}
-                title={`${dateLabel(a)} · ${a.price} kr`}
-              />
-              <span className="tabular absolute left-1/2 top-2 -translate-x-1/2 whitespace-nowrap text-[10px] text-muted">
-                {a.year}
-              </span>
-            </span>
+            <span
+              key={i}
+              className="absolute h-2.5 w-2.5 -translate-x-1/2 -translate-y-1/2 rounded-full ring-2 ring-ink"
+              style={{ left, background: color(a) }}
+              title={`${dateLabel(a)} · ${a.price} kr`}
+            />
           );
         })}
+        <span className="tabular absolute left-0 top-2 -translate-x-1/2 text-[10px] text-muted">
+          {Math.floor(min)}
+        </span>
+        <span className="tabular absolute right-0 top-2 translate-x-1/2 text-[10px] text-muted">
+          {anchors[anchors.length - 1]!.year}
+        </span>
       </div>
 
       <ul className="space-y-2">

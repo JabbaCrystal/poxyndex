@@ -37,6 +37,25 @@ export const PRICE_ANCHORS: PriceAnchor[] = [
     note: "Pris 99,00 kr · kunne stadig bestilles ny (Wayback)",
   },
   {
+    year: 2021,
+    month: 5,
+    price: 300,
+    kind: "secondhand",
+    sold: false,
+    source: "r/Denmark",
+    sourceUrl: "https://www.reddit.com/r/Denmark/comments/ndvqmi/mr_poxycat_co/",
+    note: "Udbudt på DBA: billigste ~300 kr inkl. fragt, et eksemplar >200 kr",
+  },
+  {
+    year: 2022,
+    price: 400,
+    kind: "secondhand",
+    sold: true,
+    source: "r/filmDK",
+    sourceUrl: "https://www.reddit.com/r/filmDK/comments/1hk20jh/er_mr_proxycat_tryllet_vaek/",
+    note: "Privat sælger: solgte eget eksemplar for 400 kr (~2 år før dec. 2024)",
+  },
+  {
     year: 2024,
     month: 11,
     price: 250,
@@ -44,7 +63,7 @@ export const PRICE_ANCHORS: PriceAnchor[] = [
     sold: true,
     source: "recordere.dk",
     sourceUrl: "https://forum.recordere.dk/k-mr-poxycat_topic166991.html",
-    note: "To eksemplarer solgt på DBA á 250 kr — køber nåede ikke at reagere",
+    note: "To eksemplarer solgt på DBA á 250 kr; en Reddit-bruger gav/solgte også ~250 kr i dec. 2024",
   },
 ];
 
