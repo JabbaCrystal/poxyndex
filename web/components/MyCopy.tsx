@@ -11,6 +11,7 @@ import { REGION_NAMES } from "@/lib/types";
 import { useLang } from "@/lib/i18n";
 import { CountUp } from "./CountUp";
 import { MyCopyChart } from "./MyCopyChart";
+import { SpaceXRace } from "./SpaceXRace";
 import { CommunityHistory } from "./CommunityHistory";
 
 const LS_KEY = "poxyndex_mycopy";
@@ -250,6 +251,7 @@ function Result({
         <>
           <MarketResult paid={paid} month={month} current={current} paidToday={paidToday} years={years} pos={pos} neg={neg} />
           <MyCopyChart paid={paid} month={month} current={current} cpi={cpi} />
+          <SpaceXRace paid={paid} month={month} current={current} />
         </>
       )}
 

@@ -94,6 +94,12 @@ const da: Record<string, string> = {
   "mycopychart.caption":
     "Guld: hvad du betalte, hvis det blot havde fulgt inflationen. Rød prik: hvad Poxyndekset vurderer det til i dag.",
 
+  "sxrace.title": "Din Poxycat vs. SpaceX siden {year}",
+  "sxrace.poxy": "Din kopi",
+  "sxrace.spacex": "SpaceX",
+  "sxrace.caption":
+    "Indekseret til 100 i {year}. SpaceX-værdier er omtrentlige (fra rapporterede runder) — kun til illustration.",
+
   "comm.title": "Hvad folk har betalt gennem årene",
   "comm.desc":
     "Selvrapporteret median betalt, efter købsår ({n} eksemplarer). Dit eget køb er den røde prik.",
@@ -227,6 +233,12 @@ const en: Record<string, string> = {
   "mycopychart.today": "Worth today (Poxyndex)",
   "mycopychart.caption":
     "Gold: what you paid, had it merely kept pace with inflation. Red dot: what the Poxyndex values it at today.",
+
+  "sxrace.title": "Your Poxycat vs. SpaceX since {year}",
+  "sxrace.poxy": "Your copy",
+  "sxrace.spacex": "SpaceX",
+  "sxrace.caption":
+    "Indexed to 100 in {year}. SpaceX figures are approximate (from reported rounds) — illustrative only.",
 
   "comm.title": "What people paid over the years",
   "comm.desc": "Self-reported median paid, by purchase year ({n} copies). Your own purchase is the red dot.",
