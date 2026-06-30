@@ -4,12 +4,14 @@ export function MetricCard({
   unit,
   sub,
   icon,
+  note,
 }: {
   label: string;
   value: string;
   unit?: string;
   sub?: string;
   icon?: string;
+  note?: string;
 }) {
   return (
     <div className="glass group rounded-2xl p-4 transition-transform duration-200 hover:-translate-y-0.5">
@@ -24,6 +26,7 @@ export function MetricCard({
         {unit && <span className="text-sm text-muted">{unit}</span>}
       </div>
       {sub && <div className="mt-1 text-xs text-muted">{sub}</div>}
+      {note && <div className="mt-1 font-serif text-[11px] italic text-muted/50">{note}</div>}
     </div>
   );
 }

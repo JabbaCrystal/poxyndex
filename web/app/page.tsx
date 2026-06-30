@@ -188,6 +188,7 @@ function Metrics({ latest, fx }: { latest: IndexDaily | null; fx: number | null 
         unit="kr"
         sub={t("metric.real_sub")}
         icon="📉"
+        note="» Keep it Real «"
       />
       <MetricCard
         label={t("metric.velocity")}
