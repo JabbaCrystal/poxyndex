@@ -1,5 +1,7 @@
 "use client";
 
+import { SoundToggle } from "./SoundToggle";
+
 export type Market = "dk" | "world";
 
 export function Header({
@@ -17,7 +19,10 @@ export function Header({
             The <span className="iri-text">Poxyndex</span>
           </span>
         </div>
-        <MarketToggle market={market} setMarket={setMarket} />
+        <div className="flex items-center gap-2">
+          <SoundToggle />
+          <MarketToggle market={market} setMarket={setMarket} />
+        </div>
       </div>
     </header>
   );

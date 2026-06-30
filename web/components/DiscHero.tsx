@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef, useState, type CSSProperties, type MouseEvent } from "react";
+import { playMagicChime, soundEnabled } from "@/lib/sound";
 
 const BURST_COLORS = ["#FF4A33", "#FFC24D", "#FFD56B", "#FF8A5B", "#7CFFB2", "#FFFFFF"];
 
@@ -40,6 +41,7 @@ export function DiscHero() {
 
   function pop() {
     if (prefersReduced()) return;
+    if (soundEnabled()) playMagicChime();
     const n = 16;
     const made: Particle[] = Array.from({ length: n }, (_, i) => {
       const angle = (i / n) * Math.PI * 2 + Math.random() * 0.4;

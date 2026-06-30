@@ -135,6 +135,17 @@ function Hero({ latest }: { latest: IndexDaily | null }) {
           ⚠️ {latest.meta.note}
         </div>
       )}
+      <figure className="mx-auto mt-7 max-w-md text-center">
+        <blockquote className="font-serif text-sm italic text-cloud/90">
+          &ldquo;Det er femstjernet underholdning. Komik og magi i verdensklasse!&rdquo;
+        </blockquote>
+        <figcaption className="text-[11px] text-muted">— Jørgen Thomsen, alias Mr. Poxycat</figcaption>
+        <blockquote className="mt-1.5 font-serif text-sm italic text-muted">
+          &ldquo;Det er det jo ikke, Jørgen.&rdquo;
+        </blockquote>
+        <figcaption className="text-[11px] text-muted/70">— Gitte, Jørgens kone</figcaption>
+      </figure>
+
       <hr className="iri-hr mx-auto mt-8 max-w-xs opacity-60" />
     </section>
   );
