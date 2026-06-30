@@ -20,13 +20,13 @@ import {
   type CpiPoint,
 } from "@/lib/supabase";
 import type { IndexDaily, PublicListing, Heartbeat } from "@/lib/types";
+import { useLang } from "@/lib/i18n";
 
-// SpaceX is private; this is its implied secondary-market price per share
-// (~$220, late-2025 tender chatter). Clearly labelled as implied on the card.
 const SPACEX_USD_PER_SHARE = 220;
-const FX_FALLBACK = 6.9; // DKK per USD if the FX row isn't loaded yet
+const FX_FALLBACK = 6.9;
 
 export default function Page() {
+  const { t, lang } = useLang();
   const [market, setMarket] = useState<Market>("dk");
   const [history, setHistory] = useState<IndexDaily[]>([]);
   const [listings, setListings] = useState<PublicListing[]>([]);
@@ -37,7 +37,7 @@ export default function Page() {
 
   useEffect(() => {
     if (!isConfigured) {
-      setError("Live data isn’t connected in this environment.");
+      setError("err.notconnected");
       return;
     }
     Promise.all([
@@ -63,8 +63,6 @@ export default function Page() {
     <main className="relative min-h-screen overflow-hidden">
       <Header market={market} setMarket={setMarket} />
 
-      {/* full-bleed glitter behind the hero (spans the viewport, so it never
-          clips awkwardly at a content edge) */}
       {market === "dk" && (
         <div className="pointer-events-none absolute inset-x-0 top-0 z-0 h-[680px]">
           <Sparkles count={30} />
@@ -79,7 +77,7 @@ export default function Page() {
             <Hero latest={latest} />
             {error && (
               <div className="mx-auto mb-6 max-w-md rounded-full border border-white/10 bg-white/5 px-4 py-2 text-center text-xs text-muted">
-                {error}
+                {t(error)}
               </div>
             )}
             <Metrics latest={latest} fx={fx} />
@@ -97,12 +95,13 @@ export default function Page() {
         )}
       </div>
 
-      <Footer heartbeat={heartbeat} />
+      <Footer heartbeat={heartbeat} locale={lang === "da" ? "da-DK" : "en-DK"} />
     </main>
   );
 }
 
 function Hero({ latest }: { latest: IndexDaily | null }) {
+  const { t } = useLang();
   const median = latest?.median_asking_dkk ?? null;
   const count = latest?.active_count ?? 0;
 
@@ -113,28 +112,28 @@ function Hero({ latest }: { latest: IndexDaily | null }) {
         The <span className="iri-text">Poxyndex</span>
       </h1>
       <p className="mx-auto mt-2 max-w-xl text-sm text-muted">
-        A price index for <em>Mr. Poxycat &amp; Co.</em> — the out-of-print Danish
-        DVD. Tracking the second-hand value of the nation&apos;s least liquid asset.
+        {t("hero.tagline_pre")} <em>Mr. Poxycat &amp; Co.</em> {t("hero.tagline_post")}
       </p>
 
       <div className="mt-7">
         <div className="text-[11px] font-semibold uppercase tracking-[0.2em] text-muted">
-          Headline price
+          {t("hero.headline")}
         </div>
         <div className="tabular mt-1 font-serif text-7xl font-bold leading-none">
           <CountUp value={median} className="iri-text" />
           <span className="ml-2 align-top text-2xl text-muted">kr</span>
         </div>
         <div className="mt-2 text-sm text-muted">
-          {count} {count === 1 ? "copy" : "copies"} on the market in Denmark
+          {t(count === 1 ? "hero.copies_one" : "hero.copies_other", { n: count })}
         </div>
       </div>
 
       {latest?.meta?.note && (
         <div className="mx-auto mt-5 inline-block rounded-full border border-white/10 bg-white/5 px-4 py-1.5 text-xs text-muted">
-          ⚠️ {latest.meta.note}
+          ⚠️ {t("hero.thin_note")}
         </div>
       )}
+
       <figure className="mx-auto mt-7 max-w-md text-center">
         <blockquote className="font-serif text-sm italic text-cloud/90">
           &ldquo;Det er femstjernet underholdning. Komik og magi i verdensklasse!&rdquo;
@@ -152,40 +151,42 @@ function Hero({ latest }: { latest: IndexDaily | null }) {
 }
 
 function Metrics({ latest, fx }: { latest: IndexDaily | null; fx: number | null }) {
+  const { t } = useLang();
   const median = latest?.median_asking_dkk ?? null;
   const workMin = latest?.work_minutes ?? null;
   const velocity = latest?.median_days_to_sell ?? null;
   const gap = latest?.bid_ask_gap ?? null;
   const real = latest?.real_index ?? null;
-  const spacexShares =
-    median != null ? median / (SPACEX_USD_PER_SHARE * (fx ?? FX_FALLBACK)) : null;
+  const spacexShares = median != null ? median / (SPACEX_USD_PER_SHARE * (fx ?? FX_FALLBACK)) : null;
+
+  const work =
+    workMin == null
+      ? "—"
+      : workMin < 90
+        ? `${Math.round(workMin)} ${t("metric.min")}`
+        : `${(workMin / 60).toFixed(1)} ${t("metric.hr")}`;
 
   return (
     <section className="mt-8 grid grid-cols-2 gap-3 sm:grid-cols-4">
       <MetricCard
-        label="In SpaceX shares"
+        label={t("metric.spacex")}
         value={spacexShares != null ? spacexShares.toFixed(2) : "—"}
-        sub="at implied private valuation"
+        sub={t("metric.spacex_sub")}
         icon="🚀"
       />
+      <MetricCard label={t("metric.work")} value={work} sub={t("metric.work_sub")} icon="⏱️" />
       <MetricCard
-        label="Work to afford one"
-        value={workMin != null ? formatWorkTime(workMin) : "—"}
-        sub="at the average Danish wage"
-        icon="⏱️"
-      />
-      <MetricCard
-        label="In 2025-kroner"
+        label={t("metric.real")}
         value={real != null ? Math.round(real).toString() : "—"}
         unit="kr"
-        sub="CPI-adjusted (real)"
+        sub={t("metric.real_sub")}
         icon="📉"
       />
       <MetricCard
-        label="Median time to sell"
+        label={t("metric.velocity")}
         value={velocity != null ? `${Math.round(velocity)}` : "—"}
-        unit="days"
-        sub={gap != null ? `${Math.round(gap * 100)}% bid–ask gap` : "awaiting sales"}
+        unit={t("metric.days")}
+        sub={gap != null ? t("metric.gap", { n: Math.round(gap * 100) }) : t("metric.awaiting")}
         icon="⏳"
       />
     </section>
@@ -193,42 +194,38 @@ function Metrics({ latest, fx }: { latest: IndexDaily | null; fx: number | null 
 }
 
 function RestOfWorld() {
+  const { t } = useLang();
   return (
     <div className="relative flex min-h-[60vh] flex-col items-center justify-center text-center">
       <Sparkles count={14} />
       <div className="font-serif text-8xl font-bold text-white/10">0</div>
-      <h2 className="mt-4 font-serif text-2xl font-bold">No listings found</h2>
+      <h2 className="mt-4 font-serif text-2xl font-bold">{t("world.zero")}</h2>
       <p className="mt-2 max-w-md text-muted">
-        The Poxycat economy has not yet gone global. Outside Denmark,{" "}
-        <em>Mr. Poxycat &amp; Co.</em> trades at an implied price of{" "}
-        <span className="iri-text font-bold">∞</span> — there is simply none to be had.
+        {t("world.body_pre")} <em>Mr. Poxycat &amp; Co.</em> {t("world.body_post")}{" "}
+        <span className="iri-text font-bold">∞</span> {t("world.infinity")}
       </p>
-      <p className="mt-4 text-sm text-muted">Switch back to 🇩🇰 Denmark for actual data.</p>
+      <p className="mt-4 text-sm text-muted">{t("world.switch")}</p>
     </div>
   );
 }
 
-function Footer({ heartbeat }: { heartbeat: Heartbeat | null }) {
+function Footer({ heartbeat, locale }: { heartbeat: Heartbeat | null; locale: string }) {
+  const { t } = useLang();
   return (
     <footer className="relative z-10 border-t border-white/5">
       <div className="mx-auto flex max-w-5xl flex-col gap-2 px-5 py-6 text-xs text-muted sm:flex-row sm:justify-between">
         <p>
-          A non-commercial curiosity. Aggregated, anonymised data.{" "}
+          {t("foot.tagline")}{" "}
           <a href="/methodology" className="hover:underline" style={{ color: "#FF4A33" }}>
-            Methodology &amp; privacy →
+            {t("foot.method")}
           </a>
         </p>
         <p>
           {heartbeat?.last_run
-            ? `Last updated ${new Date(heartbeat.last_run).toLocaleString("en-DK")}`
-            : "Awaiting first update"}
+            ? t("foot.updated", { time: new Date(heartbeat.last_run).toLocaleString(locale) })
+            : t("foot.awaiting")}
         </p>
       </div>
     </footer>
   );
-}
-
-function formatWorkTime(minutes: number): string {
-  if (minutes < 90) return `${Math.round(minutes)} min`;
-  return `${(minutes / 60).toFixed(1)} hr`;
 }

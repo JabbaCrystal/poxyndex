@@ -11,6 +11,7 @@ import {
   CartesianGrid,
 } from "recharts";
 import type { CommunityRow } from "@/lib/supabase";
+import { useLang } from "@/lib/i18n";
 
 const MIN_POINTS = 5; // below this, a price "history" isn't meaningful yet
 
@@ -33,6 +34,7 @@ export function CommunityHistory({
   rows: CommunityRow[];
   userEntry: { paid: number; month: string } | null;
 }) {
+  const { t } = useLang();
   // Below the threshold a "history" isn't meaningful; the count/median is still
   // surfaced by MyCopy's teaser + comparison line, so render nothing here.
   if (rows.length < MIN_POINTS) return null;
@@ -52,11 +54,9 @@ export function CommunityHistory({
   return (
     <div className="mt-5 border-t border-white/10 pt-4">
       <div className="mb-1 text-[11px] font-semibold uppercase tracking-wider text-muted">
-        What people paid over the years
+        {t("comm.title")}
       </div>
-      <p className="mb-2 text-xs text-muted">
-        Self-reported median paid, by purchase year ({rows.length} copies). Your own purchase is the red dot.
-      </p>
+      <p className="mb-2 text-xs text-muted">{t("comm.desc", { n: rows.length })}</p>
       <ResponsiveContainer width="100%" height={200}>
         <LineChart data={data} margin={{ top: 5, right: 12, bottom: 5, left: -14 }}>
           <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.07)" />
@@ -70,7 +70,7 @@ export function CommunityHistory({
               borderRadius: 12,
               color: "#ECEAF6",
             }}
-            formatter={(v: number, _n, p) => [`${v} kr (n=${p?.payload?.n ?? "?"})`, "median paid"]}
+            formatter={(v: number, _n, p) => [`${v} kr (n=${p?.payload?.n ?? "?"})`, t("comm.median_paid")]}
           />
           <Line
             type="monotone"

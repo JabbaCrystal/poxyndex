@@ -11,6 +11,7 @@ import {
   Legend,
 } from "recharts";
 import type { CpiPoint } from "@/lib/supabase";
+import { useLang } from "@/lib/i18n";
 
 function cpiFor(cpi: CpiPoint[], month: string): number | null {
   const exact = cpi.find((c) => c.month === month);
@@ -52,6 +53,7 @@ export function MyCopyChart({
   current: number;
   cpi: CpiPoint[];
 }) {
+  const { t } = useLang();
   const cpiStart = cpiFor(cpi, month);
   const now = new Date().toISOString().slice(0, 7);
   if (!cpiStart || month >= now) return null;
@@ -71,7 +73,7 @@ export function MyCopyChart({
   return (
     <div className="mt-4">
       <div className="mb-2 text-[11px] font-semibold uppercase tracking-wider text-muted">
-        Your copy since {month}
+        {t("mycopychart.title", { month })}
       </div>
       <ResponsiveContainer width="100%" height={200}>
         <LineChart data={data} margin={{ top: 5, right: 12, bottom: 5, left: -14 }}>
@@ -98,7 +100,7 @@ export function MyCopyChart({
           <Line
             type="monotone"
             dataKey="inflation"
-            name="If it tracked inflation"
+            name={t("mycopychart.inflation")}
             stroke="#FFC24D"
             strokeWidth={1.5}
             strokeDasharray="4 3"
@@ -108,7 +110,7 @@ export function MyCopyChart({
           <Line
             type="monotone"
             dataKey="actual"
-            name="Worth today (Poxyndex)"
+            name={t("mycopychart.today")}
             stroke="#FF4A33"
             strokeWidth={0}
             dot={{ r: 5, fill: "#FF4A33", stroke: "#FF4A33" }}
@@ -116,10 +118,7 @@ export function MyCopyChart({
           />
         </LineChart>
       </ResponsiveContainer>
-      <p className="mt-1 text-[11px] text-muted/70">
-        Gold: what you paid, had it merely kept pace with inflation. Red dot: what the Poxyndex
-        values it at today.
-      </p>
+      <p className="mt-1 text-[11px] text-muted/70">{t("mycopychart.caption")}</p>
     </div>
   );
 }

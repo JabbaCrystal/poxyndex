@@ -1,6 +1,7 @@
 "use client";
 
 import { SoundToggle } from "./SoundToggle";
+import { useLang } from "@/lib/i18n";
 
 export type Market = "dk" | "world";
 
@@ -14,17 +15,37 @@ export function Header({
   return (
     <header className="relative z-10 border-b border-white/5">
       <div className="mx-auto flex max-w-5xl items-center justify-between px-5 py-4">
+        <span className="font-serif text-xl font-bold tracking-tight">
+          The <span className="iri-text">Poxyndex</span>
+        </span>
         <div className="flex items-center gap-2">
-          <span className="font-serif text-xl font-bold tracking-tight">
-            The <span className="iri-text">Poxyndex</span>
-          </span>
-        </div>
-        <div className="flex items-center gap-2">
+          <LangToggle />
           <SoundToggle />
           <MarketToggle market={market} setMarket={setMarket} />
         </div>
       </div>
     </header>
+  );
+}
+
+function LangToggle() {
+  const { lang, setLang } = useLang();
+  return (
+    <div className="glass inline-flex overflow-hidden rounded-full p-0.5 text-xs font-semibold">
+      {(["da", "en"] as const).map((l) => (
+        <button
+          key={l}
+          onClick={() => setLang(l)}
+          aria-pressed={lang === l}
+          className={
+            "rounded-full px-2.5 py-1.5 uppercase transition-all " +
+            (lang === l ? "bg-white/90 text-ink" : "text-muted hover:text-cloud")
+          }
+        >
+          {l}
+        </button>
+      ))}
+    </div>
   );
 }
 
@@ -35,6 +56,7 @@ function MarketToggle({
   market: Market;
   setMarket: (m: Market) => void;
 }) {
+  const { t } = useLang();
   return (
     <div className="glass inline-flex shrink-0 overflow-hidden rounded-full p-0.5 text-sm">
       {(["dk", "world"] as const).map((m) => (
@@ -43,12 +65,10 @@ function MarketToggle({
           onClick={() => setMarket(m)}
           className={
             "rounded-full px-3.5 py-1.5 font-medium transition-all " +
-            (market === m
-              ? "bg-iris-red text-white shadow"
-              : "text-muted hover:text-cloud")
+            (market === m ? "bg-iris-red text-white shadow" : "text-muted hover:text-cloud")
           }
         >
-          {m === "dk" ? "🇩🇰 Denmark" : "🌍 World"}
+          {m === "dk" ? `🇩🇰 ${t("nav.denmark")}` : `🌍 ${t("nav.world")}`}
         </button>
       ))}
     </div>

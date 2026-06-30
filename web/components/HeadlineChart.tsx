@@ -11,8 +11,10 @@ import {
   Legend,
 } from "recharts";
 import type { IndexDaily } from "@/lib/types";
+import { useLang } from "@/lib/i18n";
 
 export function HeadlineChart({ history }: { history: IndexDaily[] }) {
+  const { t } = useLang();
   const data = history.map((d) => ({
     day: d.day,
     nominal: d.median_asking_dkk,
@@ -23,11 +25,8 @@ export function HeadlineChart({ history }: { history: IndexDaily[] }) {
     return (
       <div className="glass flex h-64 items-center justify-center rounded-2xl text-center">
         <div className="px-6">
-          <div className="font-serif text-lg text-cloud">Collecting history…</div>
-          <p className="mx-auto mt-1 max-w-sm text-sm text-muted">
-            The Poxyndex needs at least two daily readings to draw a trend. Come
-            back tomorrow — this market moves at the speed of a rare DVD.
-          </p>
+          <div className="font-serif text-lg text-cloud">{t("chart.collecting")}</div>
+          <p className="mx-auto mt-1 max-w-sm text-sm text-muted">{t("chart.collecting_body")}</p>
         </div>
       </div>
     );
@@ -36,7 +35,7 @@ export function HeadlineChart({ history }: { history: IndexDaily[] }) {
   return (
     <div className="glass rounded-2xl p-4">
       <h3 className="mb-3 font-serif text-lg font-bold text-cloud">
-        The Poxyndex over time <span className="text-muted">· nominal vs constant kroner</span>
+        {t("chart.title")} <span className="text-muted">· {t("chart.subtitle")}</span>
       </h3>
       <ResponsiveContainer width="100%" height={280}>
         <LineChart data={data} margin={{ top: 5, right: 10, bottom: 5, left: -12 }}>
@@ -57,7 +56,7 @@ export function HeadlineChart({ history }: { history: IndexDaily[] }) {
           <Line
             type="monotone"
             dataKey="nominal"
-            name="Asking price"
+            name={t("chart.asking")}
             stroke="#FF4A33"
             strokeWidth={2.5}
             dot={false}
@@ -66,7 +65,7 @@ export function HeadlineChart({ history }: { history: IndexDaily[] }) {
           <Line
             type="monotone"
             dataKey="real"
-            name="In 2025-kroner"
+            name={t("chart.real")}
             stroke="#FFC24D"
             strokeWidth={1.5}
             strokeDasharray="4 3"

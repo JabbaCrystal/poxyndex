@@ -8,6 +8,7 @@ import {
   type CommunityRow,
 } from "@/lib/supabase";
 import { REGION_NAMES } from "@/lib/types";
+import { useLang } from "@/lib/i18n";
 import { CountUp } from "./CountUp";
 import { MyCopyChart } from "./MyCopyChart";
 import { CommunityHistory } from "./CommunityHistory";
@@ -54,13 +55,21 @@ function cpiFor(cpi: CpiPoint[], month: string): number | null {
   return earlier.length ? earlier[earlier.length - 1]!.idx : null;
 }
 
-function monthLabel(month: string): string {
+function monthLabel(month: string, locale: string): string {
   const [y, m] = month.split("-").map(Number);
   if (!y || !m) return month;
-  return new Date(y, m - 1, 1).toLocaleString("en-DK", { month: "long", year: "numeric" });
+  return new Date(y, m - 1, 1).toLocaleString(locale, { month: "long", year: "numeric" });
+}
+
+function verdictKey(pct: number): string {
+  if (pct >= 1) return "copy.verdict_multi";
+  if (pct > 0.05) return "copy.verdict_up";
+  if (pct >= -0.05) return "copy.verdict_flat";
+  return "copy.verdict_down";
 }
 
 export function MyCopy({ current, cpi }: { current: number | null; cpi: CpiPoint[] }) {
+  const { t } = useLang();
   const [paid, setPaid] = useState("");
   const [month, setMonth] = useState("");
   const [region, setRegion] = useState("");
@@ -104,8 +113,6 @@ export function MyCopy({ current, cpi }: { current: number | null; cpi: CpiPoint
       /* ignore */
     }
 
-    // Anonymously join the community average — but only plausible values, and
-    // upserted by device id so repeated tries overwrite this device's one row.
     const inBounds = p >= PRICE_MIN && p <= PRICE_MAX && month >= RELEASE_MONTH && month <= maxMonth;
     if (inBounds) {
       await upsertCommunityPaid({
@@ -135,15 +142,13 @@ export function MyCopy({ current, cpi }: { current: number | null; cpi: CpiPoint
   return (
     <div className="glass rounded-2xl p-5">
       <h3 className="font-serif text-lg font-bold text-cloud">
-        Value your own copy <span aria-hidden>🎩</span>
+        {t("copy.title")} <span aria-hidden>🎩</span>
       </h3>
-      <p className="mb-4 text-xs text-muted">
-        Bought one once? See how it&apos;s aged — against the market and against inflation.
-      </p>
+      <p className="mb-4 text-xs text-muted">{t("copy.subtitle")}</p>
 
       <form onSubmit={submit} className="flex flex-wrap items-end gap-3">
         <label className="flex flex-col gap-1 text-xs text-muted">
-          What you paid (kr)
+          {t("copy.paid")}
           <input
             type="number"
             inputMode="numeric"
@@ -155,7 +160,7 @@ export function MyCopy({ current, cpi }: { current: number | null; cpi: CpiPoint
           />
         </label>
         <label className="flex flex-col gap-1 text-xs text-muted">
-          When you bought it
+          {t("copy.when")}
           <input
             type="month"
             value={month}
@@ -165,7 +170,7 @@ export function MyCopy({ current, cpi }: { current: number | null; cpi: CpiPoint
           />
         </label>
         <label className="flex flex-col gap-1 text-xs text-muted">
-          Region <span className="opacity-60">(optional)</span>
+          {t("copy.region")} <span className="opacity-60">{t("copy.optional")}</span>
           <select
             value={region}
             onChange={(e) => setRegion(e.target.value)}
@@ -183,27 +188,24 @@ export function MyCopy({ current, cpi }: { current: number | null; cpi: CpiPoint
           type="submit"
           className="rounded-lg bg-iris-red px-4 py-2 text-sm font-semibold text-white transition-opacity hover:opacity-90"
         >
-          Reveal
+          {t("copy.reveal")}
         </button>
         {entry && (
           <button type="button" onClick={clear} className="px-2 py-2 text-xs text-muted hover:text-cloud">
-            Clear
+            {t("copy.clear")}
           </button>
         )}
       </form>
 
-      <p className="mt-2 text-[11px] text-muted/60">
-        Your entry anonymously joins the community average — we store only a random in-browser ID, the
-        price, the month, and optional region. No name, email, or IP. &ldquo;Clear&rdquo; resets this
-        tool on your device; your anonymous data point stays in the average (email to remove it).
-      </p>
+      <p className="mt-2 text-[11px] text-muted/60">{t("copy.disclosure")}</p>
 
       {entry && <Result entry={entry} current={current} cpi={cpi} community={community} />}
       {!entry && community.count > 0 && community.median != null && (
         <p className="mt-4 border-t border-white/10 pt-4 text-sm text-muted">
-          🫂 <strong className="text-cloud">{community.count}</strong>{" "}
-          {community.count === 1 ? "collector has" : "collectors have"} logged a copy — median paid{" "}
-          <strong className="text-cloud">{Math.round(community.median).toLocaleString("da-DK")} kr</strong>. Add yours above.
+          {t(community.count === 1 ? "copy.teaser_one" : "copy.teaser_other", {
+            n: community.count,
+            price: Math.round(community.median).toLocaleString("da-DK"),
+          })}
         </p>
       )}
 
@@ -226,6 +228,7 @@ function Result({
   cpi: CpiPoint[];
   community: Community;
 }) {
+  const { t } = useLang();
   const { paid, month } = entry;
   const pos = "#7CFFB2";
   const neg = "#FF7A6B";
@@ -241,7 +244,7 @@ function Result({
     <div className="mt-5 border-t border-white/10 pt-4">
       {current == null ? (
         <p className="rounded-lg border border-white/10 bg-white/5 px-4 py-3 text-sm text-muted">
-          No copies are on the market right now, so there&apos;s nothing to value yours against. Check back when one&apos;s listed.
+          {t("copy.no_market")}
         </p>
       ) : (
         <>
@@ -252,11 +255,14 @@ function Result({
 
       {community.median != null && community.count > 0 && (
         <p className="mt-3 text-xs text-muted">
-          🫂 Across <strong className="text-cloud">{community.count}</strong> self-reported{" "}
-          {community.count === 1 ? "copy" : "copies"}, the median paid is{" "}
+          {t("copy.compare_pre", { n: community.count })}{" "}
           <strong className="text-cloud">{Math.round(community.median).toLocaleString("da-DK")} kr</strong>
           {" — "}
-          {paid > community.median ? "you paid above the pack." : paid < community.median ? "you got it below the pack." : "right on the median."}
+          {paid > community.median
+            ? t("copy.compare_above")
+            : paid < community.median
+              ? t("copy.compare_below")
+              : t("copy.compare_on")}
         </p>
       )}
     </div>
@@ -280,6 +286,8 @@ function MarketResult({
   pos: string;
   neg: string;
 }) {
+  const { t, lang } = useLang();
+  const locale = lang === "da" ? "da-DK" : "en-DK";
   const deltaPct = (current - paid) / paid;
   const up = current >= paid;
   const accent = up ? pos : neg;
@@ -288,7 +296,7 @@ function MarketResult({
 
   return (
     <>
-      <div className="text-[11px] font-semibold uppercase tracking-wider text-muted">Estimated value today</div>
+      <div className="text-[11px] font-semibold uppercase tracking-wider text-muted">{t("copy.value_today")}</div>
       <div className="tabular mt-1 font-serif text-4xl font-bold leading-none">
         <CountUp value={current} className="iri-text" />
         <span className="ml-2 align-top text-lg text-muted">kr</span>
@@ -304,46 +312,34 @@ function MarketResult({
           {Math.round(deltaPct * 100)}%
         </span>
         <span className="text-muted">
-          since you paid {paid.toLocaleString("da-DK")} kr in {monthLabel(month)}
+          {t("copy.since", { paid: paid.toLocaleString("da-DK"), month: monthLabel(month, locale) })}
         </span>
       </div>
 
       <ul className="mt-3 space-y-1 text-xs text-muted">
         {realPct != null && paidToday != null && (
           <li>
-            After inflation, that&apos;s{" "}
-            <strong className="text-cloud">{Math.round(paidToday).toLocaleString("da-DK")} kr</strong> in
-            today&apos;s money — so{" "}
+            {t("copy.real_line_a")}{" "}
+            <strong className="text-cloud">{Math.round(paidToday).toLocaleString("da-DK")} kr</strong>{" "}
+            {t("copy.real_line_b")}{" "}
             <strong style={{ color: realPct >= 0 ? pos : neg }}>
-              {realPct >= 0 ? "+" : ""}
-              {Math.round(realPct * 100)}% in real terms
+              {t("copy.real_terms", { pct: `${realPct >= 0 ? "+" : ""}${Math.round(realPct * 100)}` })}
             </strong>{" "}
-            ({realPct >= 0 ? "it beat inflation" : "it trailed inflation"}).
+            ({realPct >= 0 ? t("copy.beat") : t("copy.trailed")}).
           </li>
         )}
         {annual != null && (
           <li>
-            That&apos;s roughly{" "}
-            <strong className="text-cloud">
-              {annual >= 0 ? "+" : ""}
-              {Math.round(annual * 100)}%/year
-            </strong>{" "}
-            over {years.toFixed(1)} years.
+            {t("copy.annual", {
+              pct: `${annual >= 0 ? "+" : ""}${Math.round(annual * 100)}`,
+              years: years.toFixed(1),
+            })}
           </li>
         )}
-        <li className="pt-1 text-muted/70">{verdict(deltaPct)}</li>
+        <li className="pt-1 text-muted/70">{t(verdictKey(deltaPct))}</li>
       </ul>
 
-      <p className="mt-3 text-[11px] text-muted/60">
-        Based on the current median asking price — an estimate, not a guaranteed sale.
-      </p>
+      <p className="mt-3 text-[11px] text-muted/60">{t("copy.disclaimer")}</p>
     </>
   );
-}
-
-function verdict(pct: number): string {
-  if (pct >= 1) return "🪄 A vanishing act in reverse — your copy multiplied.";
-  if (pct > 0.05) return "📈 Nicely done — it appreciated.";
-  if (pct >= -0.05) return "≈ Roughly a wash — a steady hold.";
-  return "📉 Down on paper — but you own a piece of Danish comedy history.";
 }

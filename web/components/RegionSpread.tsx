@@ -1,4 +1,5 @@
 import { REGION_NAMES } from "@/lib/types";
+import { useLang } from "@/lib/i18n";
 
 /**
  * The within-Denmark "law of one price" gag: median asking price per region.
@@ -10,20 +11,17 @@ export function RegionSpread({
   regional: Record<string, number> | null;
   national: number | null;
 }) {
+  const { t } = useLang();
   const entries = Object.entries(regional ?? {});
   const max = entries.length ? Math.max(...entries.map((e) => e[1])) : 0;
 
   return (
     <div className="glass rounded-2xl p-4">
-      <h3 className="font-serif text-lg font-bold text-cloud">Regional Poxy-PPP</h3>
-      <p className="mb-3 text-xs text-muted">
-        Where is a Poxycat over- or under-valued? Median asking price by region.
-      </p>
+      <h3 className="font-serif text-lg font-bold text-cloud">{t("region.title")}</h3>
+      <p className="mb-3 text-xs text-muted">{t("region.desc")}</p>
 
       {entries.length === 0 ? (
-        <p className="py-6 text-center text-sm text-muted">
-          Not enough listings across regions yet to compute a spread.
-        </p>
+        <p className="py-6 text-center text-sm text-muted">{t("region.empty")}</p>
       ) : (
         <ul className="space-y-2.5">
           {entries
