@@ -111,6 +111,9 @@ function Hero({ latest }: { latest: IndexDaily | null }) {
       <h1 className="mt-4 font-serif text-5xl font-bold tracking-tight sm:text-6xl">
         The <span className="iri-text">Poxyndex</span>
       </h1>
+      <p className="mt-1.5 font-serif text-sm italic text-cloud/70">
+        ✨ Lidt magi har aldrig skadet nogen ✨
+      </p>
       <p className="mx-auto mt-2 max-w-xl text-sm text-muted">
         {t("hero.tagline_pre")} <em>Mr. Poxycat &amp; Co.</em> {t("hero.tagline_post")}
       </p>
