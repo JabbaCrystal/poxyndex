@@ -174,22 +174,9 @@ export function HeadlineChart({ history }: { history: IndexDaily[] }) {
       </ResponsiveContainer>
 
       <p className="mt-2 text-[11px] italic text-muted/60">{t("hist.caption")}</p>
-      <p className="mt-1 text-[11px] text-muted">
+      <p className="mt-1 text-[11px] text-muted/80">
         {t("chart.sources")}:{" "}
-        {ANCHORS_BY_DATE.filter((a) => a.sourceUrl).map((a, i, arr) => (
-          <span key={a.source + a.year}>
-            <a
-              href={a.sourceUrl}
-              target="_blank"
-              rel="noopener noreferrer nofollow"
-              className="hover:underline"
-              style={{ color: "#FF4A33" }}
-            >
-              {a.source} ({a.year})
-            </a>
-            {i < arr.length - 1 ? " · " : ""}
-          </span>
-        ))}
+        {ANCHORS_BY_DATE.map((a) => `${a.source} (${a.year})`).join(" · ")}
       </p>
     </div>
   );

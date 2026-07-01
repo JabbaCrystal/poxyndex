@@ -68,7 +68,7 @@ const da: Record<string, string> = {
   "hist.tag_sold": "Brugt · solgt",
   "hist.tag_asking": "Brugt · udbudt",
   "hist.caption":
-    "Spredte, enkeltvis kildebelagte nedslag — ikke en kurve. Hvert punkt linker til sin kilde. Vokser efterhånden som flere daterede omtaler dukker op.",
+    "Spredte, enkeltvis kildebelagte nedslag — ikke en kurve. Hvert punkt er belagt med en dateret kilde. Vokser efterhånden som flere daterede omtaler dukker op.",
 
   "copy.title": "Vurdér dit eget eksemplar",
   "copy.subtitle": "Har du købt et engang? Se hvordan det har klaret sig — mod markedet og mod inflationen.",
@@ -222,7 +222,7 @@ const en: Record<string, string> = {
   "hist.tag_sold": "Used · sold",
   "hist.tag_asking": "Used · asking",
   "hist.caption":
-    "Sparse, individually sourced data points — not a fitted trend. Each links to its source. Grows as more dated mentions surface.",
+    "Sparse, individually sourced data points — not a fitted trend. Each point is backed by a dated source. Grows as more dated mentions surface.",
 
   "copy.title": "Value your own copy",
   "copy.subtitle": "Bought one once? See how it's aged — against the market and against inflation.",
