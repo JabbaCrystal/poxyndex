@@ -65,6 +65,17 @@ export const PRICE_ANCHORS: PriceAnchor[] = [
     note: "Privat sælger: solgte eget eksemplar for 400 kr (~2 år før dec. 2024)",
   },
   {
+    year: 2022,
+    month: 12,
+    price: 200,
+    kind: "secondhand",
+    sold: false,
+    channel: "DBA",
+    source: "r/Denmark",
+    sourceUrl: "https://www.reddit.com/r/Denmark/comments/zhwtc6/",
+    note: "DBA-gårrate: »går af og til til 200,- på dba - nogle gange mere« (dec. 2022)",
+  },
+  {
     year: 2024,
     month: 11,
     price: 250,
