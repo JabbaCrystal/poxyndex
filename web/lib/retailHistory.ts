@@ -21,8 +21,15 @@ export interface PriceAnchor {
   price: number; // DKK
   kind: AnchorKind;
   sold?: boolean; // secondhand only: true = a completed sale, false = a live asking price
-  source: string; // human label of where it came from
-  sourceUrl?: string; // link to the exact page/snapshot
+  // `channel` = the actual SALES venue the price came from (Laserdisken, DBA …).
+  // This is what we surface in the UI. Omit when the venue is not verifiable
+  // (e.g. an unstated private sale) — we then show no venue rather than guess.
+  channel?: string;
+  // `source` / `sourceUrl` = where we READ/verified the figure (a forum or Reddit
+  // thread, a Wayback snapshot). Kept as an internal audit trail — NOT rendered,
+  // so we don't point users at third-party or user-generated discussion pages.
+  source: string;
+  sourceUrl?: string;
   note?: string; // short context, kept close to the source wording
 }
 
@@ -31,6 +38,7 @@ export const PRICE_ANCHORS: PriceAnchor[] = [
     year: 2011,
     price: 99,
     kind: "retail",
+    channel: "Laserdisken",
     source: "Laserdisken",
     sourceUrl:
       "https://web.archive.org/web/20110714224401/http://www.laserdisken.dk/html/visvare.dna?vare=12163039245611063",
@@ -42,6 +50,7 @@ export const PRICE_ANCHORS: PriceAnchor[] = [
     price: 300,
     kind: "secondhand",
     sold: false,
+    channel: "DBA",
     source: "r/Denmark",
     sourceUrl: "https://www.reddit.com/r/Denmark/comments/ndvqmi/mr_poxycat_co/",
     note: "Udbudt på DBA: billigste ~300 kr inkl. fragt, et eksemplar >200 kr",
@@ -61,6 +70,7 @@ export const PRICE_ANCHORS: PriceAnchor[] = [
     price: 250,
     kind: "secondhand",
     sold: true,
+    channel: "DBA",
     source: "recordere.dk",
     sourceUrl: "https://forum.recordere.dk/k-mr-poxycat_topic166991.html",
     note: "To eksemplarer solgt på DBA á 250 kr; en Reddit-bruger gav/solgte også ~250 kr i dec. 2024",

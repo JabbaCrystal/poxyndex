@@ -46,6 +46,12 @@ const da: Record<string, string> = {
   "chart.k_sold": "Andenhånd · solgt",
   "chart.live": "Live (nu)",
   "chart.sources": "Kilder",
+  "chart.v_long": "Lang sigt",
+  "chart.v_live": "Live",
+  "chart.u_nominal": "Nominelt",
+  "chart.u_real": "Faste kr.",
+  "chart.live_caption":
+    "Daglig udbudspris fra scraperen — seneste 90 dage. Bliver en rigtig tendens, efterhånden som data samler sig.",
 
   "region.title": "Regionalt Poxy-PPP",
   "region.desc": "Hvor er en Poxycat over- eller undervurderet? Median udbudspris pr. region.",
@@ -200,6 +206,12 @@ const en: Record<string, string> = {
   "chart.k_sold": "Second-hand · sold",
   "chart.live": "Live (now)",
   "chart.sources": "Sources",
+  "chart.v_long": "Long-run",
+  "chart.v_live": "Live",
+  "chart.u_nominal": "Nominal",
+  "chart.u_real": "Constant kr.",
+  "chart.live_caption":
+    "Daily asking price from the scraper — last 90 days. Becomes a real trend as data accumulates.",
 
   "region.title": "Regional Poxy-PPP",
   "region.desc": "Where is a Poxycat over- or under-valued? Median asking price by region.",

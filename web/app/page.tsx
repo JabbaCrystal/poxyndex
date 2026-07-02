@@ -83,7 +83,7 @@ export default function Page() {
             )}
             <Metrics latest={latest} fx={fx} />
             <section className="mt-6">
-              <HeadlineChart history={history} />
+              <HeadlineChart history={history} cpi={cpi} />
             </section>
             <section className="mt-6">
               <MyCopy current={latest?.median_asking_dkk ?? null} cpi={cpi} />
